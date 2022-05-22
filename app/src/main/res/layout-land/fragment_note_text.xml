@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="horizontal"
+    android:layout_height="match_parent">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="4"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:textSize="@dimen/note_title_text_size"
+                android:textStyle="bold"
+                android:layout_marginStart="@dimen/note_norm_margin"
+                android:layout_marginTop="@dimen/note_norm_margin"
+                android:layout_marginBottom="@dimen/note_big_margin"
+                android:layout_marginEnd="@dimen/note_norm_margin"
+                android:textColor="@color/black"
+                android:id="@+id/titleTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="TextView" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatSpinner
+                    android:id="@+id/categorySpinner"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:id="@+id/dateTimeView"
+                    android:layout_width="0dp"
+                    android:layout_weight="2"
+                    android:text="DateTime"
+                    android:gravity="end"
+                    android:layout_marginEnd="@dimen/note_norm_margin"
+                    android:layout_height="wrap_content"/>
+
+
+
+            </LinearLayout>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/textView"
+                android:textSize="@dimen/note_text_size"
+                android:textColor="@color/black"
+                android:layout_marginStart="@dimen/note_norm_margin"
+                android:layout_marginTop="@dimen/note_little_margin"
+                android:layout_marginBottom="@dimen/note_norm_margin"
+                android:layout_marginEnd="@dimen/note_norm_margin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="TextView" />
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_weight="1">
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/favoriteButton"
+            android:paddingTop="@dimen/note_button_padding_top"
+            android:text="@string/favorite_text_button"
+            android:textAllCaps="false"
+            android:textSize="@dimen/note_button_text_size"
+            android:drawableTop="@drawable/ic_favorite_no"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            tools:ignore="NestedWeights" />
+        <androidx.appcompat.widget.AppCompatButton
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+        <androidx.appcompat.widget.AppCompatButton
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+        <androidx.appcompat.widget.AppCompatButton
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
+
+    </LinearLayout>
+</LinearLayout>
