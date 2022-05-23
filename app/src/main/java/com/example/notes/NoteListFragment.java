@@ -150,8 +150,8 @@ public class NoteListFragment extends Fragment implements Constants {
 
         // добавляем фрагмент
         fragmentTransaction
+                .setCustomAnimations(R.anim.slide_in_left, R.anim.slide_in_right)
                 .replace(R.id.fragmentNoteContainer, noteTextFragment)
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .commit();
 
     }

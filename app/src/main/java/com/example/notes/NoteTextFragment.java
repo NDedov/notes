@@ -122,7 +122,7 @@ public class NoteTextFragment extends Fragment implements Constants {
 // добавляем фрагмент
         fragmentTransaction
                 .replace(R.id.fragmentNoteContainer, dateTimeFragment)
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 .addToBackStack("")
                 .commit();
     }
@@ -138,7 +138,7 @@ public class NoteTextFragment extends Fragment implements Constants {
 // добавляем фрагмент
         fragmentTransaction
                 .replace(R.id.fragmentContainer, dateTimeFragment)
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 .addToBackStack("")
                 .commit();
 
