@@ -27,8 +27,12 @@ import java.util.Objects;
 
 public class NoteTextFragment extends Fragment implements Constants {
 
-    Note note;
-    TextView dateTimeView;
+    Note note;//заметка
+    TextView dateTimeView; // поле для даты/времени
+    AppCompatButton favoriteButton; // кнопка Избранное
+    TextView titleView; // заголовок
+    Spinner categorySpinner; // список категорий
+    TextView textView; // текст заметки
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -43,7 +47,7 @@ public class NoteTextFragment extends Fragment implements Constants {
         super.onViewCreated(view, savedInstanceState);
 
         Bundle arguments = getArguments();
-        if (arguments != null){
+        if (arguments != null){// получаем из бандл текущую заметку
             note = arguments.getParcelable(LIST_TO_NOTE_INDEX);
             if (note != null)
                 initViews(view);
@@ -60,26 +64,39 @@ public class NoteTextFragment extends Fragment implements Constants {
                 dateTimeView.setText(new SimpleDateFormat("dd MMMM yyyy  HH:mm")//обновляем
                         // выводимое значение даты в заметке
                         .format(note.getDateTimeCreation().getTime()));
-
-                Bundle result = new Bundle();//отправляем заметку с новой датой сразу в список
-                result.putParcelable(NOTE_CHANGE_INDEX, note);
-                getParentFragmentManager().setFragmentResult(NOTE_CHANGED, result);
-                //getParentFragmentManager().popBackStack();
-
+                updateNoteList();// обновляем основной список заметок
             }
         });
     }
 
+    private void updateNoteList() {//метод для обновления основного списка заметок (NoteListFragment)
+        Bundle result = new Bundle();
+        result.putParcelable(NOTE_CHANGE_INDEX, note);
+        getParentFragmentManager().setFragmentResult(NOTE_CHANGED, result);
+    }
 
-    @SuppressLint({"SimpleDateFormat", "UseCompatLoadingForDrawables"})
     private void initViews(View view) {
-        TextView titleView = view.findViewById(R.id.titleTextView);
+        titleView = view.findViewById(R.id.titleTextView);
         dateTimeView = view.findViewById(R.id.dateTimeView);
-        Spinner categorySpinner = view.findViewById(R.id.categorySpinner);
-        TextView textView = view.findViewById(R.id.textView);
-        AppCompatButton favoriteButton = view.findViewById(R.id.favoriteButton);
+        categorySpinner = view.findViewById(R.id.categorySpinner);
+        textView = view.findViewById(R.id.textView);
+        favoriteButton = view.findViewById(R.id.favoriteButton);
+        printValues();
+        initButtons();
+        initListeners();
+    }
 
+    private void initListeners() {
+        dateTimeView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showDateTimeFragment(note);
+            }
+        });
+    }
 
+    @SuppressLint("SimpleDateFormat")
+    private void printValues() {
         titleView.setText(note.getTitle());
         textView.setText(note.getText());
         dateTimeView.setText(new SimpleDateFormat("dd MMMM yyyy  HH:mm")
@@ -90,19 +107,13 @@ public class NoteTextFragment extends Fragment implements Constants {
                 android.R.layout.simple_spinner_item, Note.categories);
         categorySpinner.setAdapter(categoryAdapter);
         categorySpinner.setSelection(note.getCategoryID());
+    }
 
+    private void initButtons() {
         if (note.isFavourite())
             favoriteButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_favorite_yes, 0, 0);
         else
             favoriteButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_favorite_no, 0, 0);
-
-        dateTimeView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showDateTimeFragment(note);
-           }
-        });
-
     }
 
     private void showDateTimeFragment(Note note) {
@@ -144,13 +155,11 @@ public class NoteTextFragment extends Fragment implements Constants {
 
     }
 
-    public static NoteTextFragment newInstance(Note note){
+    public static NoteTextFragment newInstance(Note note) {
         NoteTextFragment noteTextFragment = new NoteTextFragment();
         Bundle args = new Bundle();
         args.putParcelable(LIST_TO_NOTE_INDEX, note);
         noteTextFragment.setArguments(args);
         return noteTextFragment;
-}
-
-
+    }
 }

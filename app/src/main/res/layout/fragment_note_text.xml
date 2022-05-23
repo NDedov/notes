@@ -48,8 +48,6 @@
                     android:layout_marginEnd="@dimen/note_norm_margin"
                     android:layout_height="wrap_content"/>
 
-
-
             </LinearLayout>
 
             <androidx.appcompat.widget.AppCompatTextView

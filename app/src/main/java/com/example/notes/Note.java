@@ -17,7 +17,10 @@ public class Note implements Parcelable{//класс для работы с за
             "Семья",
             "Личное",
             "Путешествия",
-            "Развлечения"};
+            "Развлечения",
+            "Отдых",
+            "Мероприятия",
+            "Спорт"};
     String title;
     String text;
     Calendar dateTimeCreation;

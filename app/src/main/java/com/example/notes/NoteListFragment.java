@@ -33,13 +33,12 @@ public class NoteListFragment extends Fragment implements Constants {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //В момент создания нового фрагмента мы проверяем, создается ли этот фрагмент впервые, и
-       //если да, то просто удаляем его из бэкстека.
-        if (savedInstanceState != null) {
+        //если да, то просто удаляем его из бэкстека.
+        if (savedInstanceState != null)
           requireActivity().getSupportFragmentManager().popBackStack();
-        }
     }
 
-  @Override
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -50,30 +49,25 @@ public class NoteListFragment extends Fragment implements Constants {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-
         if (savedInstanceState != null)
             notes = savedInstanceState.getParcelable(NOTES_LIST);
 
-        if (notes == null) {
+        if (notes == null) {//заполнение тестовыми заметками при первом запуске
             notes = new Notes();
-            notes.testFillNotes();//заполнение тестовыми заметками
+            notes.testFillNotes();
         }
-        
+
         initListNotes(view);
-
-        if (isLandscape()) {
+        if (isLandscape())
             showLandNotes(notes.get(notes.getCurrentPosition()));
-        }
 
-        //отлавливаем изменения в заметке, обновляем список (превью)
+        //прописываем Листенер, отлавливаем изменения в заметке из NoteTextFragment, обновляем список (превью)
         getParentFragmentManager().setFragmentResultListener(NOTE_CHANGED, this,
                 new FragmentResultListener() {
                     @SuppressLint("SimpleDateFormat")
                     @Override
                     public void onFragmentResult(@NonNull String key, @NonNull Bundle bundle) {
-                        Note note;
-                        note = bundle.getParcelable(NOTE_CHANGE_INDEX);
-                        notes.replaceCurrent(note);
+                        notes.replaceCurrent(bundle.getParcelable(NOTE_CHANGE_INDEX));
                         initListNotes(view);
                     }
                 });
@@ -147,13 +141,11 @@ public class NoteListFragment extends Fragment implements Constants {
                 requireActivity().getSupportFragmentManager();
         FragmentTransaction fragmentTransaction =
                 fragmentManager.beginTransaction();
-
         // добавляем фрагмент
         fragmentTransaction
                 .setCustomAnimations(R.anim.slide_in_left, R.anim.slide_in_right)
                 .replace(R.id.fragmentNoteContainer, noteTextFragment)
                 .commit();
-
     }
 
     // метод вызывающий показ фрагмента заметки для портретной ориентации
@@ -164,7 +156,6 @@ public class NoteListFragment extends Fragment implements Constants {
                 requireActivity().getSupportFragmentManager();
         FragmentTransaction fragmentTransaction =
                 fragmentManager.beginTransaction();
-
         // добавляем фрагмент
         fragmentTransaction
                 .replace(R.id.fragmentContainer, noteTextFragment)
@@ -172,8 +163,6 @@ public class NoteListFragment extends Fragment implements Constants {
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .commit();
     }
-
-
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {

@@ -55,18 +55,36 @@ public class Notes implements Parcelable {
     }
 
     public void testFillNotes() {
-        notes.add(new Note("Первая заметка", "Добрый день, \tкак дела?\nПривет", new GregorianCalendar(), 0, false));
-        notes.add(new Note("Покупки", "Молоко, хлеб\nМасло\nМолоко", new GregorianCalendar(), 2, true));
-        notes.add(new Note("Третья заметка", "Добрый день опять, как дела?\nПривет", new GregorianCalendar(), 1, false));
-        notes.add(new Note("Новая заметка", "Добрый день, как дела?\n Привет", new GregorianCalendar(), 0, false));
-        notes.add(new Note("Что надо сделать срочно", "Молоко, хлеб\n Масло", new GregorianCalendar(), 2, true));
-        notes.add(new Note("Пароли", "Добрый день опять, как дела?\n Привет", new GregorianCalendar(), 4, false));
-        notes.add(new Note("Прочее", "Добрый день, как дела?\n Привет", new GregorianCalendar(), 0, false));
-        notes.add(new Note("Покупки", "Молоко, хлеб\n Масло", new GregorianCalendar(), 2, true));
-        notes.add(new Note("Третья заметка", "Добрый день опять, как дела?\n Привет", new GregorianCalendar(), 0, false));
-        notes.add(new Note("Первая заметка", "Добрый день, как дела?\n Привет", new GregorianCalendar(), 0, false));
-        notes.add(new Note("Покупки", "Молоко, хлеб\n Масло", new GregorianCalendar(), 2, true));
-        notes.add(new Note("Третья заметка", "Добрый день опять, как дела?\n Привет", new GregorianCalendar(), 0, false));
+        notes.add(new Note("Первая заметка", "Добрый день, \tкак дела?\nПривет",
+                new GregorianCalendar(), 0, false));
+        notes.add(new Note("Покупки", "Молоко, хлеб\nМасло\nМолоко\nМасло\nМолоко\"Молоко," +
+                " хлеб\nМасло\nМолоко\nМасло\nМолоко\"" +
+                "Молоко, хлеб\nМасло\nМолоко\nМасло\nМолоко\"Молоко, хлеб\nМасло\nМолоко\nМасло\n" +
+                "Молоко\"Молоко, хлеб\nМасло\nМолоко\nМасло\nМолокоМолоко, хлеб\nМасло\nМолоко\nМасло" +
+                "\nМолоко\"Молоко, хлеб\nМасло\nМолоко\nМасло\nМолоко\"Молоко, хлеб\nМасло\nМолоко\nМасло" +
+                "\nМолоко\"Молоко, хлеб\nМасло\nМолоко\nМасло\nМолоко\"Молоко, хлеб\nМасло\nМолоко\n" +
+                "Масло\nМолоко",
+                new GregorianCalendar(), 2, true));
+        notes.add(new Note("Третья заметка", "Добрый день опять, как дела?\nПривет",
+                new GregorianCalendar(), 1, false));
+        notes.add(new Note("Новая заметка", "Добрый день, как дела?\n Привет",
+                new GregorianCalendar(), 0, false));
+        notes.add(new Note("Что надо сделать срочно", "Молоко, хлеб\n Масло",
+                new GregorianCalendar(), 2, true));
+        notes.add(new Note("Пароли", "Добрый день опять, как дела?\n Привет",
+                new GregorianCalendar(), 4, false));
+        notes.add(new Note("Прочее", "Добрый день, как дела?\n Привет",
+                new GregorianCalendar(), 0, false));
+        notes.add(new Note("Покупки", "Молоко, хлеб\n Масло",
+                new GregorianCalendar(), 2, true));
+        notes.add(new Note("Третья заметка", "Добрый день опять, как дела?\n Привет",
+                new GregorianCalendar(), 0, false));
+        notes.add(new Note("Первая заметка", "Добрый день, как дела?\n Привет",
+                new GregorianCalendar(), 0, false));
+        notes.add(new Note("Покупки", "Молоко, хлеб\n Масло",
+                new GregorianCalendar(), 2, true));
+        notes.add(new Note("Третья заметка", "Добрый день опять, как дела?\n Привет",
+                new GregorianCalendar(), 0, false));
     }
 
     @Override

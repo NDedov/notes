@@ -18,19 +18,14 @@
             android:calendarViewShown="false"
             android:layout_weight="1"
             tools:ignore="NestedWeights" />
-
         <TimePicker
             android:id="@+id/timePicker"
             android:layout_width="0dp"
             android:timePickerMode="spinner"
             android:layout_weight="1"
             android:layout_height="match_parent">
-
         </TimePicker>
-
     </LinearLayout>
-
-
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/buttonExit"
         android:layout_width="match_parent"

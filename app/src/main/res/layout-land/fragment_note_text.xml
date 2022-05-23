@@ -28,6 +28,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="TextView" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -47,9 +48,6 @@
                     android:gravity="end"
                     android:layout_marginEnd="@dimen/note_norm_margin"
                     android:layout_height="wrap_content"/>
-
-
-
             </LinearLayout>
 
             <androidx.appcompat.widget.AppCompatTextView
