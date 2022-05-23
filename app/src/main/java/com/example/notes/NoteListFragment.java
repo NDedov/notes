@@ -26,8 +26,7 @@ import java.util.Objects;
 
 public class NoteListFragment extends Fragment implements Constants {
 
-    ArrayList<Note> notes = new ArrayList<>();//список для хранения заметок
-    private Note currentNote;
+    Notes notes;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -35,14 +34,8 @@ public class NoteListFragment extends Fragment implements Constants {
         //В момент создания нового фрагмента мы проверяем, создается ли этот фрагмент впервые, и
        //если да, то просто удаляем его из бэкстека.
         if (savedInstanceState != null) {
-            requireActivity().getSupportFragmentManager().popBackStack();
+          requireActivity().getSupportFragmentManager().popBackStack();
         }
-        else{
-            testFillNotes();//заполнение тестовыми заметками
-            currentNote = notes.get(0);
-        }
-
-
     }
 
   @Override
@@ -56,13 +49,19 @@ public class NoteListFragment extends Fragment implements Constants {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        if (savedInstanceState != null){
-            currentNote = savedInstanceState.getParcelable(CURRENT_NOTE);
-        }
 
+        if (savedInstanceState != null)
+            notes = savedInstanceState.getParcelable(NOTES_LIST);
+
+        if (notes == null) {
+            notes = new Notes();
+            notes.testFillNotes();//заполнение тестовыми заметками
+        }
+        
         initListNotes(view);
-        if (isLandscape()){
-            showLandNotes(currentNote);
+
+        if (isLandscape()) {
+            showLandNotes(notes.get(notes.getCurrentPosition()));
         }
 
     }
@@ -97,8 +96,9 @@ public class NoteListFragment extends Fragment implements Constants {
 
             //прописываем Листенеры для вью
             final Note note_position = notes.get(i);
+            final int position = i;
             tv.setOnClickListener(v -> {
-                currentNote = note_position;
+                notes.setCurrentPosition(position);
                 showNotes(note_position);
             });
         }
@@ -159,24 +159,11 @@ public class NoteListFragment extends Fragment implements Constants {
                 .commit();
     }
 
-    private void testFillNotes() {
-        notes.add(new Note("Первая заметка", "Добрый день, \tкак дела?\nПривет", new GregorianCalendar(), 0, false));
-        notes.add(new Note("Покупки", "Молоко, хлеб\nМасло\nМолоко", new GregorianCalendar(), 2, true));
-        notes.add(new Note("Третья заметка", "Добрый день опять, как дела?\nПривет", new GregorianCalendar(), 1, false));
-        notes.add(new Note("Новая заметка", "Добрый день, как дела?\n Привет", new GregorianCalendar(), 0, false));
-        notes.add(new Note("Что надо сделать срочно", "Молоко, хлеб\n Масло", new GregorianCalendar(), 2, true));
-        notes.add(new Note("Пароли", "Добрый день опять, как дела?\n Привет", new GregorianCalendar(), 4, false));
-        notes.add(new Note("Прочее", "Добрый день, как дела?\n Привет", new GregorianCalendar(), 0, false));
-        notes.add(new Note("Покупки", "Молоко, хлеб\n Масло", new GregorianCalendar(), 2, true));
-        notes.add(new Note("Третья заметка", "Добрый день опять, как дела?\n Привет", new GregorianCalendar(), 0, false));
-        notes.add(new Note("Первая заметка", "Добрый день, как дела?\n Привет", new GregorianCalendar(), 0, false));
-        notes.add(new Note("Покупки", "Молоко, хлеб\n Масло", new GregorianCalendar(), 2, true));
-        notes.add(new Note("Третья заметка", "Добрый день опять, как дела?\n Привет", new GregorianCalendar(), 0, false));
-    }
+
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
-        outState.putParcelable(CURRENT_NOTE, currentNote);
+        outState.putParcelable(NOTES_LIST, notes);
         super.onSaveInstanceState(outState);
     }
 }

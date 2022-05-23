@@ -9,5 +9,6 @@ interface Constants {
     // возврата из корректировки времени/даты, меняем итого
     int PREVIEW_LIST_LENGTH = 20; // количество символов в превью в списке записок
     String CURRENT_NOTE = "CURRENT_NOTE"; // ключ для текущей заметки
+    String NOTES_LIST = "NOTES_LIST"; // ключ для сохранения списка заметок
 
 }

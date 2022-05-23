@@ -15,12 +15,15 @@ import java.util.Date;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
+  //  NoteListFragment noteListFragment;
+
+    private static final String FRAGMENT_TAG = "NoteListFragment";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        NoteListFragment noteListFragment = new NoteListFragment();
+
 
         // скрываем  actionBar на ландшафтной ориентации
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
@@ -28,10 +31,22 @@ public class MainActivity extends AppCompatActivity {
         else
             Objects.requireNonNull(getSupportActionBar()).show();
 
-        //показываем фрагмент с основным списком заметок
-        getSupportFragmentManager()
+
+        if (savedInstanceState == null) getSupportFragmentManager()// первый раз делаем новый фрагмент
+                // со списком и добавляем
                 .beginTransaction()
-                .add(R.id.fragmentContainer, noteListFragment)
-                .commit();
+                .add(R.id.fragmentContainer, new NoteListFragment(), FRAGMENT_TAG).commit();
+        else{// пытаемся восстановить по тэгу FRAGMENT_TAG, при пересоздании активити
+            NoteListFragment noteListFragment = (NoteListFragment) getSupportFragmentManager().findFragmentByTag(FRAGMENT_TAG);
+
+            if (noteListFragment == null) // на всякий случай
+                noteListFragment = new NoteListFragment();
+
+            getSupportFragmentManager()//показываем восстановленный
+                    .beginTransaction()
+                    .replace(R.id.fragmentContainer, noteListFragment, FRAGMENT_TAG).commit();
+
+        }
+
     }
 }

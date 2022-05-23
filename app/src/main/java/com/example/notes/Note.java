@@ -8,6 +8,8 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 
+
+
 public class Note implements Parcelable{//класс для работы с заметкой
 
     public static String[] categories = {"Общее",

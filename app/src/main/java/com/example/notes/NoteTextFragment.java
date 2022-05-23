@@ -63,15 +63,6 @@ public class NoteTextFragment extends Fragment implements Constants {
         });
     }
 
-//    @Override
-//    public void onSaveInstanceState(@NonNull Bundle outState) {
-//        super.onSaveInstanceState(outState);
-//        outState.putParcelable(LIST_TO_NOTE_INDEX, note);
-//    }
-
-
-
-
 
     @SuppressLint({"SimpleDateFormat", "UseCompatLoadingForDrawables"})
     private void initViews(View view) {
