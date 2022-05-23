@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentResultListener;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.text.Html;
@@ -63,6 +64,19 @@ public class NoteListFragment extends Fragment implements Constants {
         if (isLandscape()) {
             showLandNotes(notes.get(notes.getCurrentPosition()));
         }
+
+        //отлавливаем изменения в заметке, обновляем список (превью)
+        getParentFragmentManager().setFragmentResultListener(NOTE_CHANGED, this,
+                new FragmentResultListener() {
+                    @SuppressLint("SimpleDateFormat")
+                    @Override
+                    public void onFragmentResult(@NonNull String key, @NonNull Bundle bundle) {
+                        Note note;
+                        note = bundle.getParcelable(NOTE_CHANGE_INDEX);
+                        notes.replaceCurrent(note);
+                        initListNotes(view);
+                    }
+                });
 
     }
 

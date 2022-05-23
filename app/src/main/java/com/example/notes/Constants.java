@@ -10,5 +10,8 @@ interface Constants {
     int PREVIEW_LIST_LENGTH = 20; // количество символов в превью в списке записок
     String CURRENT_NOTE = "CURRENT_NOTE"; // ключ для текущей заметки
     String NOTES_LIST = "NOTES_LIST"; // ключ для сохранения списка заметок
+    String FRAGMENT_TAG = "NoteListFragment";
+    String NOTE_CHANGED = "NOTE_CHANGED"; // ключ для отлавливания изменения заметки
+    String NOTE_CHANGE_INDEX = "NOTE_CHANGE_INDEX"; //индекя для передачи измененой заметки
 
 }

@@ -36,6 +36,10 @@ public class Notes implements Parcelable {
         return notes.get(currentPosition);
     }
 
+    public void replaceCurrent(Note note){
+        notes.set(currentPosition, note);
+    }
+
     public Note get(int position){
         return notes.get(position);
     }

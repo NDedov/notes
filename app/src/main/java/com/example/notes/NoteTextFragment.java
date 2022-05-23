@@ -57,8 +57,15 @@ public class NoteTextFragment extends Fragment implements Constants {
             @Override
             public void onFragmentResult(@NonNull String key, @NonNull Bundle bundle) {
                 note = bundle.getParcelable(DATE_EXIT_INDEX);
-                dateTimeView.setText(new SimpleDateFormat("dd MMMM yyyy  HH:mm")
+                dateTimeView.setText(new SimpleDateFormat("dd MMMM yyyy  HH:mm")//обновляем
+                        // выводимое значение даты в заметке
                         .format(note.getDateTimeCreation().getTime()));
+
+                Bundle result = new Bundle();//отправляем заметку с новой датой сразу в список
+                result.putParcelable(NOTE_CHANGE_INDEX, note);
+                getParentFragmentManager().setFragmentResult(NOTE_CHANGED, result);
+                //getParentFragmentManager().popBackStack();
+
             }
         });
     }

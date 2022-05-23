@@ -14,10 +14,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity {
-  //  NoteListFragment noteListFragment;
-
-    private static final String FRAGMENT_TAG = "NoteListFragment";
+public class MainActivity extends AppCompatActivity implements Constants {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
