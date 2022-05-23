@@ -3,27 +3,18 @@ package com.example.notes;
 import android.annotation.SuppressLint;
 import android.content.res.Configuration;
 import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentResultListener;
 import androidx.fragment.app.FragmentTransaction;
-
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.Objects;
 
 public class NoteListFragment extends Fragment implements Constants {
 
@@ -63,13 +54,9 @@ public class NoteListFragment extends Fragment implements Constants {
 
         //прописываем Листенер, отлавливаем изменения в заметке из NoteTextFragment, обновляем список (превью)
         getParentFragmentManager().setFragmentResultListener(NOTE_CHANGED, this,
-                new FragmentResultListener() {
-                    @SuppressLint("SimpleDateFormat")
-                    @Override
-                    public void onFragmentResult(@NonNull String key, @NonNull Bundle bundle) {
-                        notes.replaceCurrent(bundle.getParcelable(NOTE_CHANGE_INDEX));
-                        initListNotes(view);
-                    }
+                (key, bundle) -> {
+                    notes.replaceCurrent(bundle.getParcelable(NOTE_CHANGE_INDEX));
+                    initListNotes(view);
                 });
 
     }

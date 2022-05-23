@@ -7,23 +7,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.DatePicker;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.TimePicker;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentResultListener;
 import androidx.fragment.app.FragmentTransaction;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Objects;
+
 
 public class NoteTextFragment extends Fragment implements Constants {
 
@@ -42,6 +37,7 @@ public class NoteTextFragment extends Fragment implements Constants {
 
     }
 
+    @SuppressLint("SimpleDateFormat")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -56,17 +52,13 @@ public class NoteTextFragment extends Fragment implements Constants {
         // настраиваем FragmentResultListener при успешной смене даты в DateTimeFragment, обновляем
         // дату в текущем фрагменте
         getParentFragmentManager().setFragmentResultListener(RESULT_OK_DATE_EXIT_INDEX, this,
-                new FragmentResultListener() {
-            @SuppressLint("SimpleDateFormat")
-            @Override
-            public void onFragmentResult(@NonNull String key, @NonNull Bundle bundle) {
-                note = bundle.getParcelable(DATE_EXIT_INDEX);
-                dateTimeView.setText(new SimpleDateFormat("dd MMMM yyyy  HH:mm")//обновляем
-                        // выводимое значение даты в заметке
-                        .format(note.getDateTimeCreation().getTime()));
-                updateNoteList();// обновляем основной список заметок
-            }
-        });
+                (key, bundle) -> {
+                    note = bundle.getParcelable(DATE_EXIT_INDEX);
+                    dateTimeView.setText(new SimpleDateFormat("dd MMMM yyyy  HH:mm")//обновляем
+                            // выводимое значение даты в заметке
+                            .format(note.getDateTimeCreation().getTime()));
+                    updateNoteList();// обновляем основной список заметок
+                });
     }
 
     private void updateNoteList() {//метод для обновления основного списка заметок (NoteListFragment)
@@ -87,12 +79,7 @@ public class NoteTextFragment extends Fragment implements Constants {
     }
 
     private void initListeners() {
-        dateTimeView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showDateTimeFragment(note);
-            }
-        });
+        dateTimeView.setOnClickListener(view -> showDateTimeFragment(note));
     }
 
     @SuppressLint("SimpleDateFormat")

@@ -1,16 +1,10 @@
 package com.example.notes;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,9 +13,7 @@ import android.widget.DatePicker;
 import android.widget.TimePicker;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.Objects;
 
 
 public class DateTimeFragment extends Fragment implements Constants {
@@ -74,16 +66,13 @@ public class DateTimeFragment extends Fragment implements Constants {
     }
 
     private void initButtonExit(Button buttonExit) {
-        buttonExit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        buttonExit.setOnClickListener(view -> {
 
-                Bundle result = new Bundle();
-                note = noteTmp;
-                result.putParcelable(DATE_EXIT_INDEX, note);
-                getParentFragmentManager().setFragmentResult(RESULT_OK_DATE_EXIT_INDEX, result);
-                getParentFragmentManager().popBackStack();
-            }
+            Bundle result = new Bundle();
+            note = noteTmp;
+            result.putParcelable(DATE_EXIT_INDEX, note);
+            getParentFragmentManager().setFragmentResult(RESULT_OK_DATE_EXIT_INDEX, result);
+            getParentFragmentManager().popBackStack();
         });
     }
 
@@ -91,25 +80,14 @@ public class DateTimeFragment extends Fragment implements Constants {
         timePicker.setHour(noteTmp.getDateTimeCreation().get(Calendar.HOUR_OF_DAY));
         timePicker.setMinute(noteTmp.getDateTimeCreation().get(Calendar.MINUTE));
         timePicker.setIs24HourView(true);
-        timePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
-            @Override
-            public void onTimeChanged(TimePicker timePicker, int i, int i1) {
-                setDateTime(timePicker);
-            }
-        });
+        timePicker.setOnTimeChangedListener((timePicker1, i, i1) -> setDateTime(timePicker1));
     }
 
     private void initDatePicker(DatePicker datePicker) {
         datePicker.init(noteTmp.getDateTimeCreation().get(Calendar.YEAR),
                 noteTmp.getDateTimeCreation().get(Calendar.MONTH),
                 noteTmp.getDateTimeCreation().get(Calendar.DAY_OF_MONTH),
-                new DatePicker.OnDateChangedListener() {
-                    @Override
-                    public void onDateChanged(DatePicker datePicker, int i, int i1, int i2) {
-                        setDateTime(datePicker);
-                    }
-                }
-        );
+                (datePicker1, i, i1, i2) -> setDateTime(datePicker1));
     }
 
     private void setDateTime(TimePicker timePicker) {
