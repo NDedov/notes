@@ -3,4 +3,10 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="favorite_text_button">Избранное</string>
+    <string name="undo_text_button">Отменить</string>
+    <string name="save_text_button">Сохранить</string>
+    <string name="text_start_screen">Заметки 1.0</string>
+    <string name="filter_text_main">Категории заметок</string>
+    <string name="search_hint">Поиск…</string>
+    <string name="category_button_text">Категории</string>
 </resources>

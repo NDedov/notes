@@ -12,6 +12,7 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import java.text.SimpleDateFormat;
@@ -19,6 +20,10 @@ import java.text.SimpleDateFormat;
 public class NoteListFragment extends Fragment implements Constants {
 
     Notes notes;
+    Button filterButton;
+
+    int currentFilterCategory;
+    int defaultFilterCategory = Note.categories.length;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -40,24 +45,51 @@ public class NoteListFragment extends Fragment implements Constants {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        if (savedInstanceState != null)
+        if (savedInstanceState != null) {
             notes = savedInstanceState.getParcelable(NOTES_LIST);
+            currentFilterCategory = savedInstanceState.getInt(FILTER_INDEX);
+        }
 
         if (notes == null) {//заполнение тестовыми заметками при первом запуске
             notes = new Notes();
             notes.testFillNotes();
+            currentFilterCategory = defaultFilterCategory;//выбираем в фильтре по умолчанию "Все"
         }
 
+        initButtons(view);
         initListNotes(view);
+        initListeners(view);
+
         if (isLandscape())
             showLandNotes(notes.get(notes.getCurrentPosition()));
+    }
 
+    private void initListeners(View view) {
         //прописываем Листенер, отлавливаем изменения в заметке из NoteTextFragment, обновляем список (превью)
         getParentFragmentManager().setFragmentResultListener(NOTE_CHANGED, this,
                 (key, bundle) -> {
                     notes.replaceCurrent(bundle.getParcelable(NOTE_CHANGE_INDEX));
                     initListNotes(view);
                 });
+
+        //листенер, обрабатывающий изменение в фильтре категорий
+        getChildFragmentManager().setFragmentResultListener(RESULT_OK_FILTER_EXIT_INDEX, this,
+                (requestKey, result) -> {
+                    currentFilterCategory = result.getInt(FILTER_INDEX, defaultFilterCategory);
+                    initListNotes(view);
+                });
+
+    }
+
+    private void initButtons(View view) {
+        filterButton = view.findViewById(R.id.filterButton);
+        filterButton.setOnClickListener(view1 -> getChildFragmentManager()
+                .beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_left, R.anim.slide_in_right)
+                .replace(R.id.filterChildLayout, FilterFragment
+                        .newInstance(currentFilterCategory))
+                        .addToBackStack("")
+                        .commit());
 
     }
 
@@ -72,30 +104,40 @@ public class NoteListFragment extends Fragment implements Constants {
         LinearLayout layout = view.findViewById(R.id.linearListView);
         layout.removeAllViews();
 
+
         for (int i = 0; i < notes.size(); i++){
-            @SuppressLint("InflateParams") TextView tv =
-                    (TextView)getLayoutInflater().inflate(R.layout.tvtemplate, null);// добавляем
-            // view для заметок по шаблону
 
-            //выводим информацию по заметке в view
-            tv.setText(Html.fromHtml("<strong>" + notes.get(i).getTitle() + "</strong><small><br/><br/>"+
-                    preview(notes.get(i).getText()) + "</small><br/><small>" +
-                    new SimpleDateFormat("dd MMMM yyyy  HH:mm").format(notes.get(i).getDateTimeCreation().getTime())));
+            if (notes.get(i).getCategoryID() == currentFilterCategory //добавляем заметки c учетом фильтра
+                    || currentFilterCategory == defaultFilterCategory){
+                @SuppressLint("InflateParams") TextView tv =
+                        (TextView)getLayoutInflater().inflate(R.layout.tvtemplate, null);// добавляем
+                // view для заметок по шаблону
 
-            //корректируем параметры view - отступы
-            LinearLayout.LayoutParams textViewLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            textViewLayoutParams.setMargins(16,12,16,12);
-            tv.setLayoutParams(textViewLayoutParams);
+                //выводим информацию по заметке в view
+                tv.setText(Html.fromHtml("<strong>" + notes.get(i).getTitle() +
+                        "</strong><small><br/><br/>"+ preview(notes.get(i).getText()) +
+                        "</small><br/><small>" + new SimpleDateFormat("dd MMMM yyyy  HH:mm")
+                        .format(notes.get(i).getDateTimeCreation().getTime())));
 
-            layout.addView(tv);
+                //корректируем параметры view - отступы
+                LinearLayout.LayoutParams textViewLayoutParams =
+                        new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                                LinearLayout.LayoutParams.WRAP_CONTENT);
+                textViewLayoutParams.setMargins(16,12,16,12);
+                tv.setLayoutParams(textViewLayoutParams);
 
-            //прописываем Листенеры для вью
-            final Note note_position = notes.get(i);
-            final int position = i;
-            tv.setOnClickListener(v -> {
-                notes.setCurrentPosition(position);
-                showNotes(note_position);
-            });
+                layout.addView(tv);
+
+                //прописываем Листенеры для вью
+                final Note note_position = notes.get(i);
+                final int position = i;
+                tv.setOnClickListener(v -> {
+                    notes.setCurrentPosition(position);
+                    showNotes(note_position);
+                });
+
+            }
+
         }
     }
 
@@ -154,6 +196,7 @@ public class NoteListFragment extends Fragment implements Constants {
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putParcelable(NOTES_LIST, notes);
+        outState.putInt(FILTER_INDEX, currentFilterCategory);
         super.onSaveInstanceState(outState);
     }
 }

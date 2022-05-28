@@ -1,8 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:orientation="vertical"
     android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/textSearchView"
+            style="@style/TextStyle"
+            android:layout_width="0dp"
+
+            android:layout_height="wrap_content"
+            android:hint="@string/search_hint"
+            android:gravity="bottom"
+
+            android:textSize="@dimen/search_text_size"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/filterButton"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/filterButton"
+            style="@style/ButtonHorizontalNoteStyle"
+            android:layout_width="@dimen/filter_button_size"
+            android:layout_height="@dimen/filter_button_size"
+            android:layout_marginEnd="@dimen/note_little_margin"
+            android:drawableTop="@drawable/ic_filter"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/textSearchView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <FrameLayout
+        android:id="@+id/filterChildLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+    </FrameLayout>
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -14,4 +54,4 @@
             android:orientation="vertical">
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
-</FrameLayout>
+</LinearLayout>
