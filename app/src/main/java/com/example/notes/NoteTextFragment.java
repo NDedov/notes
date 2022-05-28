@@ -9,15 +9,18 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import java.text.SimpleDateFormat;
+import java.util.Objects;
 
 
 public class NoteTextFragment extends Fragment implements Constants {
@@ -25,9 +28,13 @@ public class NoteTextFragment extends Fragment implements Constants {
     Note note;//заметка
     TextView dateTimeView; // поле для даты/времени
     AppCompatButton favoriteButton; // кнопка Избранное
+    AppCompatButton undoButton; // кнопка UNDO
+    AppCompatButton saveButton; // кнопка сохранить
+
     TextView titleView; // заголовок
     Spinner categorySpinner; // список категорий
     TextView textView; // текст заметки
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -61,8 +68,18 @@ public class NoteTextFragment extends Fragment implements Constants {
                 });
     }
 
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        updateNoteList();
+        super.onSaveInstanceState(outState);
+
+    }
+
     private void updateNoteList() {//метод для обновления основного списка заметок (NoteListFragment)
         Bundle result = new Bundle();
+        note.setTitle(titleView.getText().toString());
+        note.setText(textView.getText().toString());
+        note.setCategoryID(categorySpinner.getSelectedItemPosition());
         result.putParcelable(NOTE_CHANGE_INDEX, note);
         getParentFragmentManager().setFragmentResult(NOTE_CHANGED, result);
     }
@@ -73,13 +90,55 @@ public class NoteTextFragment extends Fragment implements Constants {
         categorySpinner = view.findViewById(R.id.categorySpinner);
         textView = view.findViewById(R.id.textView);
         favoriteButton = view.findViewById(R.id.favoriteButton);
+        undoButton = view.findViewById(R.id.undoButton);
+        saveButton = view.findViewById(R.id.saveButton);
         printValues();
         initButtons();
         initListeners();
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
+    public void displayToast(String text) {
+        Toast toast = Toast.makeText(getContext(),
+                text,
+                Toast.LENGTH_SHORT);
+
+        View toastView = toast.getView();
+        toastView.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.rounded_corner_toast, null));
+
+        toast.show();
+
+    }
+
     private void initListeners() {
         dateTimeView.setOnClickListener(view -> showDateTimeFragment(note));
+
+        undoButton.setOnClickListener(view -> {
+            textView.onTextContextMenuItem(android.R.id.undo);
+            titleView.onTextContextMenuItem(android.R.id.undo);
+        });
+
+        saveButton.setOnClickListener(view -> {
+            updateNoteList();
+            if (isLandscape()){
+                displayToast("Успешно сохранено");
+
+               // Toast.makeText(getContext(),"Успешно сохранено",Toast.LENGTH_SHORT).show();
+            }
+            else {
+                displayToast("Успешно сохранено");
+               // Toast.makeText(getContext(),"Успешно сохранено",Toast.LENGTH_SHORT).show();
+                requireActivity().getSupportFragmentManager().popBackStack();
+            }
+        });
+
+        favoriteButton.setOnClickListener(view -> {
+            note.setFavourite(!note.isFavourite);
+            showFavoriteButton();
+            Bundle result = new Bundle();
+            result.putParcelable(NOTE_CHANGE_INDEX, note);
+            getParentFragmentManager().setFragmentResult(NOTE_CHANGED, result);
+        });
     }
 
     @SuppressLint("SimpleDateFormat")
@@ -96,15 +155,28 @@ public class NoteTextFragment extends Fragment implements Constants {
         categorySpinner.setSelection(note.getCategoryID());
     }
 
+
     private void initButtons() {
+        showFavoriteButton();
+        undoButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_undo2, 0, 0);
+        saveButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_save2, 0, 0);
+    }
+
+    private void showFavoriteButton() {
         if (note.isFavourite())
             favoriteButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_favorite_yes, 0, 0);
         else
             favoriteButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_favorite_no, 0, 0);
+
+    }
+
+    private boolean isLandscape() {
+        return getResources().getConfiguration().orientation
+                == Configuration.ORIENTATION_LANDSCAPE;
     }
 
     private void showDateTimeFragment(Note note) {
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
+        if (isLandscape())
             showLandDateTime(note);
         else
             showPortDateTime(note);

@@ -16,18 +16,13 @@
             android:layout_height="wrap_content"
             android:orientation="vertical" >
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:textSize="@dimen/note_title_text_size"
-                android:textStyle="bold"
-                android:layout_marginStart="@dimen/note_norm_margin"
-                android:layout_marginTop="@dimen/note_norm_margin"
-                android:layout_marginBottom="@dimen/note_big_margin"
-                android:layout_marginEnd="@dimen/note_norm_margin"
-                android:textColor="@color/black"
+            <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/titleTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="TextView" />
+                style="@style/TitleStyle"
+                android:text="TextView"
+                />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -50,14 +45,9 @@
                     android:layout_height="wrap_content"/>
             </LinearLayout>
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/textView"
-                android:textSize="@dimen/note_text_size"
-                android:textColor="@color/black"
-                android:layout_marginStart="@dimen/note_norm_margin"
-                android:layout_marginTop="@dimen/note_little_margin"
-                android:layout_marginBottom="@dimen/note_norm_margin"
-                android:layout_marginEnd="@dimen/note_norm_margin"
+                style="@style/TextStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="TextView" />
@@ -71,26 +61,23 @@
         android:layout_weight="1">
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/favoriteButton"
-            android:paddingTop="@dimen/note_button_padding_top"
+            style="@style/ButtonVerticalNoteStyle"
             android:text="@string/favorite_text_button"
-            android:textAllCaps="false"
-            android:textSize="@dimen/note_button_text_size"
             android:drawableTop="@drawable/ic_favorite_no"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
             android:layout_weight="1"
             tools:ignore="NestedWeights" />
         <androidx.appcompat.widget.AppCompatButton
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
+            style="@style/ButtonVerticalNoteStyle"
             android:layout_weight="1"/>
         <androidx.appcompat.widget.AppCompatButton
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
+            style="@style/ButtonVerticalNoteStyle"
+            android:id="@+id/undoButton"
+            android:text="@string/undo_text_button"
             android:layout_weight="1"/>
         <androidx.appcompat.widget.AppCompatButton
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:id="@+id/saveButton"
+            android:text="@string/save_text_button"
+            style="@style/ButtonVerticalNoteStyle"
             android:layout_weight="1"/>
 
 

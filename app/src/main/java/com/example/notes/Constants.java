@@ -1,5 +1,7 @@
 package com.example.notes;
 
+import android.content.res.Configuration;
+
 interface Constants {
     String LIST_TO_NOTE_INDEX = "LIST_TO_NOTE_INDEX"; //ключ для передачи note из списка в NoteText
     String NOTE_TO_DATE_TIME_INDEX = "NOTE_TO_DATE_TIME_INDEX";//ключ для передачи note из NoteText
@@ -12,5 +14,7 @@ interface Constants {
     String FRAGMENT_TAG = "NoteListFragment";
     String NOTE_CHANGED = "NOTE_CHANGED"; // ключ для отлавливания изменения заметки
     String NOTE_CHANGE_INDEX = "NOTE_CHANGE_INDEX"; //индекя для передачи измененой заметки
-
+    String FILTER_INDEX = "FILTER_EXIT_INDEX"; //ключ для передачи значения выбранной категории
+    String RESULT_OK_FILTER_EXIT_INDEX = "RESULT_OK_FILTER_EXIT_INDEX"; //индекс для положительного
+    // возврата из выбора категорий в фильтре
 }
