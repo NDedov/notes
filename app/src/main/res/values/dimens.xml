@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="note_title_text_size">32sp</dimen>
+    <dimen name="note_norm_margin">8dp</dimen>
+    <dimen name="note_big_margin">12dp</dimen>
+    <dimen name="note_text_size">16sp</dimen>
+    <dimen name="note_little_margin">4dp</dimen>
+    <dimen name="note_button_padding_top">16dp</dimen>
+    <dimen name="note_button_text_size">12sp</dimen>
+</resources>
