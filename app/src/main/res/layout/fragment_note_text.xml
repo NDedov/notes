@@ -2,8 +2,22 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_height="match_parent">
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbarNoteText"
+            android:layout_width="match_parent"
+            app:title=""
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/white"
+            app:titleTextColor="@color/white"
+            />
+    </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -74,7 +88,7 @@
             android:id="@+id/undoButton"
             style="@style/ButtonHorizontalNoteStyle"
             android:textSize="@dimen/note_button_text_size"
-            android:text="@string/undo_text_button"
+            android:text="@string/delete_text_button"
             android:layout_weight="1"/>
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/saveButton"

@@ -1,19 +1,33 @@
 package com.example.notes;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.Toolbar;
+import androidx.compose.foundation.text.UndoManager;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -28,13 +42,14 @@ public class NoteTextFragment extends Fragment implements Constants {
     Note note;//заметка
     TextView dateTimeView; // поле для даты/времени
     AppCompatButton favoriteButton; // кнопка Избранное
-    AppCompatButton undoButton; // кнопка UNDO
+    AppCompatButton deleteButton; // кнопка Удалить
     AppCompatButton saveButton; // кнопка сохранить
 
     TextView titleView; // заголовок
     Spinner categorySpinner; // список категорий
     TextView textView; // текст заметки
 
+    Menu menuMain;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -66,6 +81,8 @@ public class NoteTextFragment extends Fragment implements Constants {
                             .format(note.getDateTimeCreation().getTime()));
                     updateNoteList();// обновляем основной список заметок
                 });
+
+        setActionBar(view);
     }
 
     @Override
@@ -90,7 +107,7 @@ public class NoteTextFragment extends Fragment implements Constants {
         categorySpinner = view.findViewById(R.id.categorySpinner);
         textView = view.findViewById(R.id.textView);
         favoriteButton = view.findViewById(R.id.favoriteButton);
-        undoButton = view.findViewById(R.id.undoButton);
+        deleteButton = view.findViewById(R.id.undoButton);
         saveButton = view.findViewById(R.id.saveButton);
         printValues();
         initButtons();
@@ -105,41 +122,91 @@ public class NoteTextFragment extends Fragment implements Constants {
 
         View toastView = toast.getView();
         toastView.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.rounded_corner_toast, null));
-
         toast.show();
-
     }
 
     private void initListeners() {
         dateTimeView.setOnClickListener(view -> showDateTimeFragment(note));
 
-        undoButton.setOnClickListener(view -> {
-            textView.onTextContextMenuItem(android.R.id.undo);
-            titleView.onTextContextMenuItem(android.R.id.undo);
+        deleteButton.setOnClickListener(view -> {//обработка кнопки удалить
+            Bundle result = new Bundle();
+            result.putParcelable(NOTE_CHANGE_INDEX, note);
+            getParentFragmentManager().setFragmentResult(NOTE_DELETE, result);
+            requireActivity().getSupportFragmentManager().popBackStack();
+            displayToast("Заметка удалена");
         });
 
-        saveButton.setOnClickListener(view -> {
+        saveButton.setOnClickListener(view -> {//обработка кнопки сохранить
             updateNoteList();
             if (isLandscape()){
                 displayToast("Успешно сохранено");
-
-               // Toast.makeText(getContext(),"Успешно сохранено",Toast.LENGTH_SHORT).show();
             }
             else {
                 displayToast("Успешно сохранено");
-               // Toast.makeText(getContext(),"Успешно сохранено",Toast.LENGTH_SHORT).show();
                 requireActivity().getSupportFragmentManager().popBackStack();
             }
         });
 
-        favoriteButton.setOnClickListener(view -> {
-            note.setFavourite(!note.isFavourite);
+        favoriteButton.setOnClickListener(view -> {//обработка кнопки Избранное
+            note.setFavourite(!note.isFavourite());
             showFavoriteButton();
             Bundle result = new Bundle();
             result.putParcelable(NOTE_CHANGE_INDEX, note);
             getParentFragmentManager().setFragmentResult(NOTE_CHANGED, result);
         });
     }
+
+    private void setActionBar(@NonNull View view) {
+        Toolbar toolbar = view.findViewById(R.id.toolbarNoteText);
+
+        ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_back);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                View view = requireActivity().getCurrentFocus();
+                if (view != null) {//скрытие клавиатуры
+                    InputMethodManager imm = (InputMethodManager)requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                }
+                requireActivity().getSupportFragmentManager().popBackStack();
+            }
+        });
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.text_menu, menu);
+        menuMain = menu;
+    }
+    @SuppressLint("NonConstantResourceId")
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {//обработчик меню
+        switch (item.getItemId()){
+            case R.id.action_text_save:
+                updateNoteList();
+                displayToast("Успешно сохранено");
+                return true;
+            case R.id.action_text_redo:
+
+                textView.onTextContextMenuItem(android.R.id.redo);
+                titleView.onTextContextMenuItem(android.R.id.redo);
+                return true;
+            case R.id.action_text_undo:
+                textView.onTextContextMenuItem(android.R.id.undo);
+                titleView.onTextContextMenuItem(android.R.id.undo);
+
+                return true;
+
+        }
+        if (item.getItemId() == R.id.action_text_save){
+            Toast.makeText(getContext(),"Нажали сохранить", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 
     @SuppressLint("SimpleDateFormat")
     private void printValues() {
@@ -158,8 +225,8 @@ public class NoteTextFragment extends Fragment implements Constants {
 
     private void initButtons() {
         showFavoriteButton();
-        undoButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_undo2, 0, 0);
-        saveButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_save2, 0, 0);
+        deleteButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_trash, 0, 0);
+        saveButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_save3, 0, 0);
     }
 
     private void showFavoriteButton() {
@@ -221,4 +288,6 @@ public class NoteTextFragment extends Fragment implements Constants {
         noteTextFragment.setArguments(args);
         return noteTextFragment;
     }
+
+
 }
