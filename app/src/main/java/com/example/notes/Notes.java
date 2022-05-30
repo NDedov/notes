@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 
 public class Notes implements Parcelable {
-    ArrayList<Note> notes;
-    int currentPosition;
+    private ArrayList<Note> notes;
+    private int currentPosition;
 
     public Notes() {
         notes = new ArrayList<>();
@@ -42,6 +42,14 @@ public class Notes implements Parcelable {
 
     public Note get(int position){
         return notes.get(position);
+    }
+
+    public void delete(int position){
+        notes.remove(position);
+    }
+
+    public void delete(Note note){
+        notes.remove(note);
     }
 
     public void setCurrentPosition(int currentPosition) {

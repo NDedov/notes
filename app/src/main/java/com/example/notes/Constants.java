@@ -15,6 +15,7 @@ interface Constants {
     String NOTE_CHANGED = "NOTE_CHANGED"; // ключ для отлавливания изменения заметки
     String NOTE_CHANGE_INDEX = "NOTE_CHANGE_INDEX"; //индекя для передачи измененой заметки
     String FILTER_INDEX = "FILTER_EXIT_INDEX"; //ключ для передачи значения выбранной категории
+    String NOTE_DELETE = "NOTE_DELETE"; // ключ для передачи заметки на удаление
     String RESULT_OK_FILTER_EXIT_INDEX = "RESULT_OK_FILTER_EXIT_INDEX"; //индекс для положительного
     // возврата из выбора категорий в фильтре
 }

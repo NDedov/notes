@@ -19,12 +19,12 @@ public class Note implements Parcelable{//класс для работы с за
             "Отдых",
             "Мероприятия",
             "Спорт"};
-    String title;
-    String text;
-    Calendar dateTimeCreation;
-    Calendar dateTimeModify;
-    int categoryID;
-    boolean isFavourite;
+    private String title;
+    private String text;
+    private Calendar dateTimeCreation;
+    private Calendar dateTimeModify;
+    private int categoryID;
+    private boolean isFavourite;
 
     public Note(String title, String text, Calendar dateTimeCreation, int categoryID, boolean isFavourite) {
         this.title = title;

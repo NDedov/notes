@@ -9,4 +9,20 @@
     <string name="filter_text_main">Категории заметок</string>
     <string name="search_hint">Поиск…</string>
     <string name="category_button_text">Категории</string>
+    <string name="edit_popup">Редактировать</string>
+    <string name="to_favorite_popup">В избранное</string>
+    <string name="delete_popup">Удалить</string>
+    <string name="settings">Настройки</string>
+    <string name="about">О программе</string>
+    <string name="exit">Выход</string>
+    <string name="drawer_header">Заметки 1.0</string>
+    <string name="email">ndedov@gmail.com</string>
+    <string name="navigation_drawer_open">Открыто</string>
+    <string name="navigation_drawer_close">Закрыто</string>
+    <string name="all_rights_reserved_2022_c">All rights reserved 2022 (c)</string>
+    <string name="save">Сохранить</string>
+    <string name="redo">Повторить</string>
+    <string name="undo">Отменить</string>
+    <string name="back">Назад</string>
+    <string name="delete_text_button">Удалить</string>
 </resources>
