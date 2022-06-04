@@ -20,15 +20,21 @@ public class Filter implements Parcelable {
         isFavoriteShow = in.readByte() != 0;
         searchString = in.readString();
     }
-    public boolean isShow(Note note){
+    public boolean isShow(Note note){//подходит ли Заметка под условия фильтра
         boolean fFilter = false;
         boolean fFavorite = false;
-        boolean fSearch = true;
+        boolean fSearch = false;
         if (note.getCategoryID() == currentFilterCategory || currentFilterCategory == defaultFilterCategory)
             fFilter = true;
         if (!isFavoriteShow || note.isFavourite())
             fFavorite = true;
-        //todo search
+        if (searchString != null){
+            if (note.getText().toLowerCase().contains(searchString.toLowerCase())
+                    || note.getTitle().toLowerCase().contains(searchString.toLowerCase()))
+                fSearch = true;
+        }
+        else
+            fSearch = true;
 
         return fFilter && fFavorite && fSearch;
     }

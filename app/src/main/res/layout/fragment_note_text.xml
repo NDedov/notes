@@ -35,6 +35,7 @@
                 style="@style/TitleStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:hint="@string/note_title_hint"
                 android:text="TextView" />
 
             <LinearLayout
@@ -62,8 +63,10 @@
             <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/textView"
                 style="@style/TextStyle"
+                android:gravity="top"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:hint="@string/note_text_hint"
                 android:text="TextView" />
         </LinearLayout>
 
@@ -77,25 +80,20 @@
             android:id="@+id/favoriteButton"
             style="@style/ButtonHorizontalNoteStyle"
             android:text="@string/favorite_text_button"
-
             android:layout_weight="1"
             tools:ignore="NestedWeights" />
         <androidx.appcompat.widget.AppCompatButton
             style="@style/ButtonHorizontalNoteStyle"
-
             android:layout_weight="1"/>
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/undoButton"
+            android:id="@+id/deleteButton"
             style="@style/ButtonHorizontalNoteStyle"
-            android:textSize="@dimen/note_button_text_size"
             android:text="@string/delete_text_button"
             android:layout_weight="1"/>
         <androidx.appcompat.widget.AppCompatButton
+            style="@style/ButtonHorizontalNoteStyle"
             android:id="@+id/saveButton"
             android:text="@string/save_text_button"
-
-            style="@style/ButtonHorizontalNoteStyle"
-
             android:layout_weight="1"/>
 
 

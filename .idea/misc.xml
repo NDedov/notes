@@ -4,18 +4,26 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/pc_android/AndroidStudioProjects/notes/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.272" />
+        <entry key="..\:/Users/pc_android/AndroidStudioProjects/notes/app/src/main/res/drawable/ic_about.xml" value="0.2195" />
         <entry key="..\:/Users/pc_android/AndroidStudioProjects/notes/app/src/main/res/drawable/ic_back.xml" value="0.296" />
         <entry key="..\:/Users/pc_android/AndroidStudioProjects/notes/app/src/main/res/drawable/ic_back_svgrepo_com.xml" value="0.296" />
+        <entry key="..\:/Users/pc_android/AndroidStudioProjects/notes/app/src/main/res/drawable/ic_exit.xml" value="0.2195" />
         <entry key="..\:/Users/pc_android/AndroidStudioProjects/notes/app/src/main/res/drawable/ic_favorite_no.xml" value="0.272" />
         <entry key="..\:/Users/pc_android/AndroidStudioProjects/notes/app/src/main/res/drawable/ic_favorite_yes.xml" value="0.272" />
         <entry key="..\:/Users/pc_android/AndroidStudioProjects/notes/app/src/main/res/drawable/ic_filter.xml" value="0.2965" />
+        <entry key="..\:/Users/pc_android/AndroidStudioProjects/notes/app/src/main/res/drawable/ic_notes_notebook.xml" value="0.2195" />
         <entry key="..\:/Users/pc_android/AndroidStudioProjects/notes/app/src/main/res/drawable/ic_notes_notebook_svgrepo_com.xml" value="0.2965" />
+        <entry key="..\:/Users/pc_android/AndroidStudioProjects/notes/app/src/main/res/drawable/ic_plus.xml" value="0.2195" />
         <entry key="..\:/Users/pc_android/AndroidStudioProjects/notes/app/src/main/res/drawable/ic_redo_new.xml" value="0.296" />
         <entry key="..\:/Users/pc_android/AndroidStudioProjects/notes/app/src/main/res/drawable/ic_redo_new_grey.xml" value="0.296" />
         <entry key="..\:/Users/pc_android/AndroidStudioProjects/notes/app/src/main/res/drawable/ic_save.xml" value="0.2965" />
         <entry key="..\:/Users/pc_android/AndroidStudioProjects/notes/app/src/main/res/drawable/ic_save2.xml" value="0.2965" />
         <entry key="..\:/Users/pc_android/AndroidStudioProjects/notes/app/src/main/res/drawable/ic_save3.xml" value="0.296" />
+        <entry key="..\:/Users/pc_android/AndroidStudioProjects/notes/app/src/main/res/drawable/ic_save3_grey.xml" value="0.2195" />
         <entry key="..\:/Users/pc_android/AndroidStudioProjects/notes/app/src/main/res/drawable/ic_save_grey.xml" value="0.296" />
+        <entry key="..\:/Users/pc_android/AndroidStudioProjects/notes/app/src/main/res/drawable/ic_settings.xml" value="0.2195" />
+        <entry key="..\:/Users/pc_android/AndroidStudioProjects/notes/app/src/main/res/drawable/ic_settings_white.xml" value="0.2195" />
+        <entry key="..\:/Users/pc_android/AndroidStudioProjects/notes/app/src/main/res/drawable/ic_trash.xml" value="0.2195" />
         <entry key="..\:/Users/pc_android/AndroidStudioProjects/notes/app/src/main/res/drawable/ic_undo.xml" value="0.2965" />
         <entry key="..\:/Users/pc_android/AndroidStudioProjects/notes/app/src/main/res/drawable/ic_undo2.xml" value="0.2965" />
         <entry key="..\:/Users/pc_android/AndroidStudioProjects/notes/app/src/main/res/drawable/ic_undo_new.xml" value="0.296" />
@@ -26,7 +34,9 @@
         <entry key="..\:/Users/pc_android/AndroidStudioProjects/notes/app/src/main/res/layout-land/fragment_date_time.xml" value="0.44703770197486536" />
         <entry key="..\:/Users/pc_android/AndroidStudioProjects/notes/app/src/main/res/layout-land/fragment_note_text.xml" value="0.3484375" />
         <entry key="..\:/Users/pc_android/AndroidStudioProjects/notes/app/src/main/res/layout/activity_main.xml" value="0.4" />
+        <entry key="..\:/Users/pc_android/AndroidStudioProjects/notes/app/src/main/res/layout/activity_main2.xml" value="0.4" />
         <entry key="..\:/Users/pc_android/AndroidStudioProjects/notes/app/src/main/res/layout/draver_header.xml" value="0.4" />
+        <entry key="..\:/Users/pc_android/AndroidStudioProjects/notes/app/src/main/res/layout/drawer_header.xml" value="0.4" />
         <entry key="..\:/Users/pc_android/AndroidStudioProjects/notes/app/src/main/res/layout/fragment_about.xml" value="0.4" />
         <entry key="..\:/Users/pc_android/AndroidStudioProjects/notes/app/src/main/res/layout/fragment_date_time.xml" value="0.4" />
         <entry key="..\:/Users/pc_android/AndroidStudioProjects/notes/app/src/main/res/layout/fragment_filter.xml" value="0.4" />
@@ -36,6 +46,7 @@
         <entry key="..\:/Users/pc_android/AndroidStudioProjects/notes/app/src/main/res/layout/tvtemplate.xml" value="0.4" />
         <entry key="..\:/Users/pc_android/AndroidStudioProjects/notes/app/src/main/res/menu/draver_menu.xml" value="0.4" />
         <entry key="..\:/Users/pc_android/AndroidStudioProjects/notes/app/src/main/res/menu/drawer_menu.xml" value="0.4" />
+        <entry key="..\:/Users/pc_android/AndroidStudioProjects/notes/app/src/main/res/menu/list_menu.xml" value="0.4" />
         <entry key="..\:/Users/pc_android/AndroidStudioProjects/notes/app/src/main/res/menu/list_popup.xml" value="0.4" />
         <entry key="..\:/Users/pc_android/AndroidStudioProjects/notes/app/src/main/res/menu/text_menu.xml" value="0.4" />
       </map>

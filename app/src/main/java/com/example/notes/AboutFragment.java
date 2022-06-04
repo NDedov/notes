@@ -7,23 +7,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
-public class AboutFragment extends Fragment {
+public class AboutFragment extends Fragment implements OnBackPressedListener{
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (savedInstanceState != null)
+            requireActivity().getSupportFragmentManager().popBackStack();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_about, container, false);
 
     }
@@ -32,21 +31,18 @@ public class AboutFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         LinearLayout layout = view.findViewById(R.id.aboutLayout);
-        layout.setOnClickListener(view1 -> {
-
-            MainActivity ma = (MainActivity) getActivity();//восстанавливаем ActionBar
-            assert ma != null;
-
+        layout.setOnClickListener(view1 -> { //закрываем на нажатие
             if (getResources().getConfiguration().orientation
                     == Configuration.ORIENTATION_LANDSCAPE)//восстанавливаем фрагмент для заметок
                 // для ландшафтной ориентации
-                ma.findViewById(R.id.fragmentNoteContainer).setVisibility(View.VISIBLE);
-     //       else
-//                Objects.requireNonNull(ma.getSupportActionBar()).show();//восстанавливаем actionBar
-                // для портретной ориентации
-
-                requireActivity().getSupportFragmentManager().popBackStack();//закрываем
+                requireActivity().findViewById(R.id.fragmentNoteContainer).setVisibility(View.VISIBLE);
+            requireActivity().getSupportFragmentManager().popBackStack();//закрываем
         });
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        requireActivity().getSupportFragmentManager().popBackStack();
     }
 }

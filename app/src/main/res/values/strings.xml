@@ -4,7 +4,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="favorite_text_button">Избранное</string>
     <string name="undo_text_button">Отменить</string>
-    <string name="save_text_button">Сохранить</string>
+    <string name="save_text_button">Готово</string>
     <string name="text_start_screen">Заметки 1.0</string>
     <string name="filter_text_main">Категории заметок</string>
     <string name="search_hint">Поиск…</string>
@@ -19,10 +19,35 @@
     <string name="email">ndedov@gmail.com</string>
     <string name="navigation_drawer_open">Открыто</string>
     <string name="navigation_drawer_close">Закрыто</string>
-    <string name="all_rights_reserved_2022_c">All rights reserved 2022 (c)</string>
+    <string name="all_rights_reserved_2022_c">Все права защищены ©</string>
     <string name="save">Сохранить</string>
     <string name="redo">Повторить</string>
     <string name="undo">Отменить</string>
     <string name="back">Назад</string>
     <string name="delete_text_button">Удалить</string>
+    <string name="title_activity_main2">MainActivity2</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="note_text_hint">Текст…</string>
+    <string name="note_title_hint">Название…</string>
+    <string name="attention">Внимание</string>
+    <string name="exit_question">Выйти без сохранения?</string>
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
+    <string name="cancel">Отмена</string>
+    <string name="yes_save">Сохранить</string>
+    <string name="no_save">Выход</string>
+    <string name="delete_note_question">Удалить заметку?</string>
+    <string name="yes_delete">Удалить</string>
+    <string name="no_delete">Назад</string>
+    <string name="toast_note_delete">Заметка удалена</string>
+    <string name="save_ok">Сохранено</string>
+    <string name="press_again_to_exit">Нажмите еще раз для выхода</string>
+    <string name="text_continue_start_screen">Нажмите для продолжения…</string>
 </resources>

@@ -2,13 +2,12 @@ package com.example.notes;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 
 
-public class Note implements Parcelable{//класс для работы с заметкой
+public class Note implements Parcelable, Comparable{//класс для работы с заметкой
 
     public static String[] categories = {"Общее",
             "Работа",
@@ -32,7 +31,8 @@ public class Note implements Parcelable{//класс для работы с за
         this.dateTimeCreation = dateTimeCreation;
         this.categoryID = categoryID;
         this.isFavourite = isFavourite;
-        updateTime();
+        this.dateTimeModify = dateTimeCreation;
+
     }
 
     protected Note(Parcel in) {
@@ -70,13 +70,8 @@ public class Note implements Parcelable{//класс для работы с за
         return text;
     }
 
-    public Calendar getDateTimeCreation() {
-        return dateTimeCreation;
-    }
-
-    public void setDateTimeCreation(Calendar dateTimeCreation) {
-        this.dateTimeCreation = dateTimeCreation;
-        updateTime();
+    public Calendar getDateTimeModify() {
+        return dateTimeModify;
     }
 
     public void setTitle(String title) {
@@ -123,5 +118,16 @@ public class Note implements Parcelable{//класс для работы с за
         parcel.writeString(text);
         parcel.writeInt(categoryID);
         parcel.writeByte((byte) (isFavourite ? 1 : 0));
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        Note note = (Note)o;
+        if (dateTimeModify.getTime().getTime() > note.dateTimeModify.getTime().getTime())
+            return -1;
+        if (dateTimeModify.getTime().getTime() == note.dateTimeModify.getTime().getTime())
+            return 0;
+        return 1;
+
     }
 }

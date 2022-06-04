@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -17,64 +17,76 @@
             app:subtitleTextColor="@color/white"
             app:title="@string/app_name"
             app:titleTextColor="@color/white"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            android:fitsSystemWindows="true"
             />
+
+    <com.google.android.material.appbar.CollapsingToolbarLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        app:contentScrim="?attr/colorPrimary">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/textSearchView"
+                style="@style/TextStyle"
+                android:layout_width="0dp"
+                android:singleLine="true"
+                android:layout_height="0dp"
+                android:hint="@string/search_hint"
+                android:gravity="bottom"
+                android:textSize="@dimen/search_text_size"
+                app:layout_constraintBottom_toTopOf="@+id/filterChildLayout"
+                app:layout_constraintEnd_toStartOf="@+id/filterButton"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/filterButton"
+                style="@style/ButtonHorizontalNoteStyle"
+                android:layout_width="@dimen/filter_button_size"
+                android:layout_height="@dimen/filter_button_size"
+                android:drawableTop="@drawable/ic_filter"
+                app:layout_constraintBottom_toTopOf="@+id/filterChildLayout"
+                app:layout_constraintStart_toEndOf="@id/textSearchView"
+                app:layout_constraintEnd_toStartOf="@id/filterFavoriteButton"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/filterFavoriteButton"
+                style="@style/ButtonHorizontalNoteStyle"
+                android:paddingTop="@dimen/padding_top_favorite_button"
+                android:layout_width="@dimen/filter_button_size"
+                android:layout_height="@dimen/filter_button_size"
+                android:layout_marginEnd="@dimen/note_little_margin"
+                app:layout_constraintBottom_toTopOf="@+id/filterChildLayout"
+                app:layout_constraintStart_toEndOf="@id/filterButton"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+            <FrameLayout
+                android:id="@+id/filterChildLayout"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/textSearchView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            </FrameLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/textSearchView"
-            style="@style/TextStyle"
-            android:layout_width="0dp"
-
-            android:layout_height="wrap_content"
-            android:hint="@string/search_hint"
-            android:gravity="bottom"
-
-            android:textSize="@dimen/search_text_size"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/filterButton"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/filterButton"
-            style="@style/ButtonHorizontalNoteStyle"
-            android:layout_width="@dimen/filter_button_size"
-            android:layout_height="@dimen/filter_button_size"
-
-
-            android:drawableTop="@drawable/ic_filter"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/textSearchView"
-            app:layout_constraintEnd_toStartOf="@id/filterFavoriteButton"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/filterFavoriteButton"
-            style="@style/ButtonHorizontalNoteStyle"
-            android:paddingTop="@dimen/padding_top_favorite_button"
-            android:layout_width="@dimen/filter_button_size"
-            android:layout_height="@dimen/filter_button_size"
-            android:layout_marginEnd="@dimen/note_little_margin"
-            android:drawableTop="@drawable/ic_favorite_no"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/filterButton"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-    <FrameLayout
-        android:id="@+id/filterChildLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-    </FrameLayout>
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true">
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        >
         <LinearLayout
             android:id="@+id/linearListView"
             android:layout_width="match_parent"
@@ -83,4 +95,13 @@
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
-</LinearLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/addFab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/note_very_big_margin"
+        android:src="@drawable/ic_plus"
+        />
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

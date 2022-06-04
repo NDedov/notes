@@ -1,23 +1,29 @@
 package com.example.notes;
 
+import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
-
+import androidx.annotation.RequiresApi;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.GregorianCalendar;
 
 public class Notes implements Parcelable {
     private ArrayList<Note> notes;
-    private int currentPosition;
+    private Note currentNote;
+    Comparator<Note> comparator;
 
     public Notes() {
         notes = new ArrayList<>();
-        currentPosition = 0;
+        currentNote = null;
+        comparator = Note::compareTo;
     }
+
+
 
     protected Notes(Parcel in) {
         notes = in.createTypedArrayList(Note.CREATOR);
-        currentPosition = in.readInt();
+        currentNote = in.readParcelable(Note.class.getClassLoader());
     }
 
     public static final Creator<Notes> CREATOR = new Creator<Notes>() {
@@ -32,36 +38,39 @@ public class Notes implements Parcelable {
         }
     };
 
-    public Note getCurrent(){
-        return notes.get(currentPosition);
+    public Note getCurrentNote() {
+        return currentNote;
+    }
+    public int getSize(){
+        return notes.size();
     }
 
-    public void replaceCurrent(Note note){
-        notes.set(currentPosition, note);
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public void setCurrentNote(Note currentNote) {
+        this.currentNote = currentNote;
+        notes.sort(comparator);
     }
 
     public Note get(int position){
         return notes.get(position);
     }
 
-    public void delete(int position){
-        notes.remove(position);
-    }
-
     public void delete(Note note){
         notes.remove(note);
     }
 
-    public void setCurrentPosition(int currentPosition) {
-        this.currentPosition = currentPosition;
-    }
     public int size(){
         return notes.size();
     }
-    public int getCurrentPosition() {
-        return currentPosition;
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public void add(Note note){
+        notes.add(note);
+        currentNote = note;
+        notes.sort(comparator);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void testFillNotes() {
         notes.add(new Note("Первая заметка", "Добрый день, \tкак дела?\nПривет",
                 new GregorianCalendar(), 0, false));
@@ -93,6 +102,7 @@ public class Notes implements Parcelable {
                 new GregorianCalendar(), 2, true));
         notes.add(new Note("Третья заметка", "Добрый день опять, как дела?\n Привет",
                 new GregorianCalendar(), 0, false));
+        notes.sort(comparator);
     }
 
     @Override
@@ -103,6 +113,6 @@ public class Notes implements Parcelable {
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeTypedList(notes);
-        parcel.writeInt(currentPosition);
+        parcel.writeParcelable(currentNote, i);
     }
 }
