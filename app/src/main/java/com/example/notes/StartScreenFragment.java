@@ -3,19 +3,16 @@ package com.example.notes;
 import android.annotation.SuppressLint;
 import android.content.res.Configuration;
 import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
-
-import java.util.Objects;
-
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.widget.TextView;
 
 public class StartScreenFragment extends Fragment {
 
@@ -27,7 +24,6 @@ public class StartScreenFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_start_screen, container, false);
 
     }
@@ -36,22 +32,23 @@ public class StartScreenFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         ConstraintLayout layout = view.findViewById(R.id.startScreenLayout);
-        layout.setOnClickListener(view1 -> {
-
-            MainActivity ma = (MainActivity) getActivity();//восстанавливаем ActionBar
-            assert ma != null;
-
+        layout.setOnClickListener(view1 -> {//по клику закрываем текущий фрагмент
             if (getResources().getConfiguration().orientation
                     == Configuration.ORIENTATION_LANDSCAPE)//восстанавливаем фрагмент для заметок
                 // для ландшафтной ориентации
-                ma.findViewById(R.id.fragmentNoteContainer).setVisibility(View.VISIBLE);
-    //        else
-//                Objects.requireNonNull(ma.getSupportActionBar()).show();//восстанавливаем actionBar
-            // для портретной ориентации
-
+                requireActivity().findViewById(R.id.fragmentNoteContainer).setVisibility(View.VISIBLE);
             requireActivity().getSupportFragmentManager().popBackStack();//закрываем
         });
+        TextView textView = view.findViewById(R.id.textContinueScreenView);
+
+        Animation anim = new AlphaAnimation(0.0f, 1.0f);
+        anim.setDuration(700); //You can manage the blinking time with this parameter
+        anim.setStartOffset(20);
+        anim.setRepeatMode(Animation.REVERSE);
+        anim.setRepeatCount(Animation.INFINITE);
+        textView.startAnimation(anim);
 
     }
 
-    }
+
+}

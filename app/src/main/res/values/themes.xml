@@ -72,6 +72,12 @@
         <item name="android:backgroundTint">@color/grey_light</item>
         <item name="android:layout_height">0dp</item>
     </style>
+    <style name="Theme.Notes.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+    <style name="Theme.Notes.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="Theme.Notes.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
 
 </resources>

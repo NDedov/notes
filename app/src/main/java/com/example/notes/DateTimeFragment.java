@@ -16,7 +16,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 
-public class DateTimeFragment extends Fragment implements Constants {
+public class DateTimeFragment extends Fragment implements Constants,OnBackPressedListener {
 
     Note note, noteTmp;
     Button buttonExit;
@@ -48,7 +48,7 @@ public class DateTimeFragment extends Fragment implements Constants {
             note = arguments.getParcelable(NOTE_TO_DATE_TIME_INDEX);
             noteTmp = new Note(note.getTitle(),//создаем временный объект для корректировки даты
                     note.getText(),
-                    note.getDateTimeCreation(),
+                    note.getDateTimeModify(),
                     note.getCategoryID(),
                     note.isFavourite());
             initViews(view);
@@ -77,16 +77,16 @@ public class DateTimeFragment extends Fragment implements Constants {
     }
 
     private void initTimePicker(TimePicker timePicker) {
-        timePicker.setHour(noteTmp.getDateTimeCreation().get(Calendar.HOUR_OF_DAY));
-        timePicker.setMinute(noteTmp.getDateTimeCreation().get(Calendar.MINUTE));
+        timePicker.setHour(noteTmp.getDateTimeModify().get(Calendar.HOUR_OF_DAY));
+        timePicker.setMinute(noteTmp.getDateTimeModify().get(Calendar.MINUTE));
         timePicker.setIs24HourView(true);
         timePicker.setOnTimeChangedListener((timePicker1, i, i1) -> setDateTime(timePicker1));
     }
 
     private void initDatePicker(DatePicker datePicker) {
-        datePicker.init(noteTmp.getDateTimeCreation().get(Calendar.YEAR),
-                noteTmp.getDateTimeCreation().get(Calendar.MONTH),
-                noteTmp.getDateTimeCreation().get(Calendar.DAY_OF_MONTH),
+        datePicker.init(noteTmp.getDateTimeModify().get(Calendar.YEAR),
+                noteTmp.getDateTimeModify().get(Calendar.MONTH),
+                noteTmp.getDateTimeModify().get(Calendar.DAY_OF_MONTH),
                 (datePicker1, i, i1, i2) -> setDateTime(datePicker1));
     }
 
@@ -97,7 +97,7 @@ public class DateTimeFragment extends Fragment implements Constants {
         tmpCalendar.set(Calendar.DAY_OF_MONTH, datePicker.getDayOfMonth());
         tmpCalendar.set(Calendar.HOUR_OF_DAY,timePicker.getHour());
         tmpCalendar.set(Calendar.MINUTE,timePicker.getMinute());
-        noteTmp.setDateTimeCreation(tmpCalendar);
+        noteTmp.setDateTimeModify(tmpCalendar);
     }
 
     private void setDateTime(DatePicker datePicker) {
@@ -107,7 +107,7 @@ public class DateTimeFragment extends Fragment implements Constants {
         tmpCalendar.set(Calendar.DAY_OF_MONTH, datePicker.getDayOfMonth());
         tmpCalendar.set(Calendar.HOUR_OF_DAY,timePicker.getHour());
         tmpCalendar.set(Calendar.MINUTE,timePicker.getMinute());
-        noteTmp.setDateTimeCreation(tmpCalendar);
+        noteTmp.setDateTimeModify(tmpCalendar);
     }
 
 
@@ -117,6 +117,11 @@ public class DateTimeFragment extends Fragment implements Constants {
         args.putParcelable(NOTE_TO_DATE_TIME_INDEX, note);
         dateTimeFragment.setArguments(args);
         return dateTimeFragment;
+    }
+
+    @Override
+    public void onBackPressed() {
+        requireActivity().getSupportFragmentManager().popBackStack();
     }
 }
 

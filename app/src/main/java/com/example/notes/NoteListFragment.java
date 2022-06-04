@@ -4,34 +4,45 @@ import android.animation.Animator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.view.menu.MenuBuilder;
-import androidx.appcompat.widget.Toolbar;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import android.text.Editable;
 import android.text.Html;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.text.SimpleDateFormat;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 public class NoteListFragment extends Fragment implements Constants {
 
     Notes notes;
     Button filterButton,filterFavoriteButton;
+    FloatingActionButton addButton;
+
+
     Filter filter;
+    EditText textSearchView;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -46,9 +57,28 @@ public class NoteListFragment extends Fragment implements Constants {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        setHasOptionsMenu(true);
         return inflater.inflate(R.layout.fragment_note_list, container, false);
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, @NonNull MenuInflater inflater) {
+        MenuItem item = menu.findItem(R.id.action_text_redo);//скрываем ненужные пункты меню
+        if (item != null) {
+            item.setVisible(false);
+        }
+        item = menu.findItem(R.id.action_text_undo);
+        if (item != null) {
+            item.setVisible(false);
+        }
+        item = menu.findItem(R.id.action_text_save);
+        if (item != null) {
+            item.setVisible(false);
+        }
+    }
+
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -56,6 +86,7 @@ public class NoteListFragment extends Fragment implements Constants {
         if (savedInstanceState != null) {
             notes = savedInstanceState.getParcelable(NOTES_LIST);
             filter = savedInstanceState.getParcelable(FILTER_INDEX);
+
         }
 
         if (notes == null) {//заполнение тестовыми заметками при первом запуске
@@ -66,29 +97,43 @@ public class NoteListFragment extends Fragment implements Constants {
 
         initButtons(view);
         initListNotes(view);
+        initSearch(view);
         initFragmentResultListeners(view);
-
-        MainActivity ma = (MainActivity) getActivity();
-        assert ma != null;
-        ma.initToolbarAndDrawer();//связываем для бутерброда
+        ((MainActivity)requireActivity()).initToolbarAndDrawer(); //инициализация для Toolbar и Drawer
 
         if (isLandscape())
-            showLandNotes(notes.get(notes.getCurrentPosition()));
+            showLandNotes(notes.getCurrentNote());
     }
 
-    private void setActionBar(@NonNull View view) {
-        Toolbar toolbar = view.findViewById(R.id.toolbarNoteList);
-        ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
-        setHasOptionsMenu(true);
+    private void initSearch(View view) {
+        textSearchView = view.findViewById(R.id.textSearchView);
+        textSearchView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @RequiresApi(api = Build.VERSION_CODES.N)
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                String text = textSearchView.getText().toString();
+                filter.setSearchString(text);
+                initListNotes(view);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
     }
 
-
-
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private void initFragmentResultListeners(View view) {
         //прописываем Листенер, отлавливаем изменения в заметке из NoteTextFragment, обновляем список (превью)
         getParentFragmentManager().setFragmentResultListener(NOTE_CHANGED, this,
                 (key, bundle) -> {
-                    notes.replaceCurrent(bundle.getParcelable(NOTE_CHANGE_INDEX));
+                    notes.setCurrentNote(bundle.getParcelable(NOTE_CHANGE_INDEX));
                     initListNotes(view);
                 });
 
@@ -108,14 +153,17 @@ public class NoteListFragment extends Fragment implements Constants {
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private void initButtons(View view) {
         filterButton = view.findViewById(R.id.filterButton);
         filterButton.setOnClickListener(view1 -> {
             List<Fragment> fragmentList = getChildFragmentManager().getFragments();
             boolean isFilterShow = false;
             for (Fragment fragment: fragmentList)//проверяем есть ли уже открытый фрагмент с фильтром
-                if (fragment instanceof FilterFragment)
+                if (fragment instanceof FilterFragment) {
                     isFilterShow = true;
+                    break;
+                }
 
             if (isFilterShow)
                 getChildFragmentManager().popBackStack();
@@ -129,17 +177,27 @@ public class NoteListFragment extends Fragment implements Constants {
                         .commit();
         });
 
+        addButton = view.findViewById(R.id.addFab);
+        addButton.setOnClickListener(view1 -> {
+
+            notes.add(new Note("", "", new GregorianCalendar(), 0, false));
+            showNotes(notes.getCurrentNote());
+        });
+
         filterFavoriteButton = view.findViewById(R.id.filterFavoriteButton);
         filterFavoriteButton.setOnClickListener(view1 -> {
             filter.setFavoriteShow(!filter.isFavoriteShow());
-            if (filter.isFavoriteShow())
-                filterFavoriteButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_favorite_yes, 0, 0);
-            else
-                filterFavoriteButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_favorite_no, 0, 0);
+            showFavoriteIcon(filter.isFavoriteShow());
             initListNotes(view);
-
         });
+        showFavoriteIcon(filter.isFavoriteShow());
+    }
 
+    private void showFavoriteIcon(boolean favoriteShow) {
+        if (favoriteShow)
+            filterFavoriteButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_favorite_yes, 0, 0);
+        else
+            filterFavoriteButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_favorite_no, 0, 0);
     }
 
     private boolean isLandscape() {
@@ -148,11 +206,12 @@ public class NoteListFragment extends Fragment implements Constants {
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @SuppressLint("SimpleDateFormat")
     private void initListNotes(View view) {
         LinearLayout layout = view.findViewById(R.id.linearListView);
         layout.removeAllViews();
-
+        int tvAmount = 0;
         for (int i = 0; i < notes.size(); i++){
 
             if (filter.isShow(notes.get(i))){
@@ -164,7 +223,7 @@ public class NoteListFragment extends Fragment implements Constants {
                 tv.setText(Html.fromHtml("<strong>" + notes.get(i).getTitle() +
                         "</strong><small><br/><br/>"+ preview(notes.get(i).getText()) +
                         "</small><br/><small>" + new SimpleDateFormat("dd MMMM yyyy  HH:mm")
-                        .format(notes.get(i).getDateTimeCreation().getTime())));
+                        .format(notes.get(i).getDateTimeModify().getTime())));
 
                 //корректируем параметры view - отступы
                 LinearLayout.LayoutParams textViewLayoutParams =
@@ -177,67 +236,78 @@ public class NoteListFragment extends Fragment implements Constants {
                     drawFavorite(tv);
 
                 layout.addView(tv);
+                tvAmount++;
 
                 //прописываем Листенеры для вью
                 final Note note_position = notes.get(i);
-                final int position = i;
+//                final int position = i;
                 tv.setOnClickListener(v -> {
-                    notes.setCurrentPosition(position);
+                    notes.setCurrentNote(note_position);
                     showNotes(note_position);
                 });
 
                 //прописываем попап меню
-                initPopupMenu(tv,layout, note_position, position);
+                initPopupMenu(tv,layout, note_position);
             }
+        }
+        if (tvAmount == 0){//если нет заметок, то выводим информацию о том, что список пуст
+            TextView tv = new TextView(getContext());
+            tv.setText("Список пуст...");
+            LinearLayout.LayoutParams textViewLayoutParams =
+                    new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT);
+            textViewLayoutParams.setMargins(16,24,16,12);
+            tv.setLayoutParams(textViewLayoutParams);
+            tv.setTextSize(18);
+            layout.addView(tv);
         }
     }
 
-    private void initPopupMenu(TextView tv, LinearLayout layout, Note note_position, int position) {
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    private void initPopupMenu(TextView tv, LinearLayout layout, Note note_position) {
         tv.setOnLongClickListener(view1 -> {
             Activity activity = requireActivity();
             PopupMenu popupMenu = new PopupMenu(activity, view1);
             activity.getMenuInflater().inflate(R.menu.list_popup, popupMenu.getMenu());
 
-            popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(MenuItem menuItem) {
-                    switch (menuItem.getItemId()){
-                        case (R.id.action_popup_edit):
-                            notes.setCurrentPosition(position);
-                            showNotes(note_position);
-                            return true;
-                        case (R.id.action_popup_to_favorite):
-                            notes.get(position).setFavourite(true);
-                            drawFavorite(tv);
-                            return true;
-                        case (R.id.action_popup_delete):
-                            notes.delete(note_position);
-                            tv.animate() //анимация на удаление
-                                    .translationXBy(1000)
-                                    .setDuration(150)
-                                    .setListener(new Animator.AnimatorListener() {
-                                        @Override
-                                        public void onAnimationStart(Animator animator) {
-                                        }
+            popupMenu.setOnMenuItemClickListener(menuItem -> {//инициализация пунктов меню
+                switch (menuItem.getItemId()){
+                    case (R.id.action_popup_edit):
+                       // notes.setCurrentPosition(position);
+                        notes.setCurrentNote(note_position);
+                        showNotes(note_position);
+                        return true;
+                    case (R.id.action_popup_to_favorite):
+                        note_position.setFavourite(true);
+                        drawFavorite(tv);
+                        return true;
+                    case (R.id.action_popup_delete):
+                        notes.delete(note_position);
+                        tv.animate() //анимация на удаление
+                                .translationXBy(1000)
+                                .setDuration(150)
+                                .setListener(new Animator.AnimatorListener() {
+                                    @Override
+                                    public void onAnimationStart(Animator animator) {
+                                    }
 
-                                        @Override
-                                        public void onAnimationEnd(Animator animator) {
-                                            layout.removeView(tv);
-                                        }
+                                    @Override
+                                    public void onAnimationEnd(Animator animator) {
+                                        layout.removeView(tv);
+                                    }
 
-                                        @Override
-                                        public void onAnimationCancel(Animator animator) {
-                                        }
+                                    @Override
+                                    public void onAnimationCancel(Animator animator) {
+                                    }
 
-                                        @Override
-                                        public void onAnimationRepeat(Animator animator) {
-                                        }
-                                    })
-                                    .start();
-                            return true;
-                    }
-                    return true;
+                                    @Override
+                                    public void onAnimationRepeat(Animator animator) {
+                                    }
+                                })
+                                .start();
+                        return true;
                 }
+                return true;
             });
             popupMenu.show();
             return true;
@@ -264,6 +334,7 @@ public class NoteListFragment extends Fragment implements Constants {
         return text.substring(0,PREVIEW_LIST_LENGTH) + "...";
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private void showNotes(Note note) {
         if (isLandscape())
             showLandNotes(note);
@@ -272,18 +343,28 @@ public class NoteListFragment extends Fragment implements Constants {
     }
 
     // метод вызывающий показ фрагмента заметки для ланшафтной ориентации
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private void showLandNotes(Note note) {
-        NoteTextFragment noteTextFragment =
-                NoteTextFragment.newInstance(note);
-        FragmentManager fragmentManager =
-                requireActivity().getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction =
-                fragmentManager.beginTransaction();
-        // добавляем фрагмент
-        fragmentTransaction
-                .setCustomAnimations(R.anim.slide_in_left, R.anim.slide_in_right)
-                .replace(R.id.fragmentNoteContainer, noteTextFragment)
-                .commit();
+
+        if (note == null && notes.getSize() > 0) {//показываем первый по умолчанию
+            notes.setCurrentNote(notes.get(0));
+            note = notes.getCurrentNote();
+        }
+
+        if (note != null){
+            NoteTextFragment noteTextFragment =
+                    NoteTextFragment.newInstance(note);
+            FragmentManager fragmentManager =
+                    requireActivity().getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction =
+                    fragmentManager.beginTransaction();
+            // добавляем фрагмент
+            fragmentTransaction
+                    .setCustomAnimations(R.anim.slide_in_left, R.anim.slide_in_right)
+                    .replace(R.id.fragmentNoteContainer, noteTextFragment)
+                    .commit();
+
+        }
     }
 
     // метод вызывающий показ фрагмента заметки для портретной ориентации

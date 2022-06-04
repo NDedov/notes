@@ -1,21 +1,14 @@
 package com.example.notes;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
-import android.widget.TextView;
-
-import java.text.SimpleDateFormat;
 
 
 public class FilterFragment  extends Fragment implements Constants{
@@ -49,7 +42,6 @@ public class FilterFragment  extends Fragment implements Constants{
 
     private void initViews(View view) {
         LinearLayout layout = view.findViewById(R.id.categoryLayout);
-        //layout.removeAllViews();
 
         for (int i = 0; i < Note.categories.length + 1; i++) {//заполняем радиобаттонами категорий
             RadioButton rb = new RadioButton(getContext());
@@ -62,7 +54,7 @@ public class FilterFragment  extends Fragment implements Constants{
             if (i == currentFilterPosition)
                 rb.setChecked(true);
 
-            layout.addView(rb);
+            layout.addView(rb);//добавляем радиобаттоны
 
             //прописываем Листенеры для вью
             final int positionCategory = i;

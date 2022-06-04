@@ -12,4 +12,9 @@
     <dimen name="filter_button_size">48dp</dimen>
     <dimen name="padding_top_favorite_button">14dp</dimen>
     <dimen name="drawer_height">250dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="note_very_big_margin">24dp</dimen>
+    <dimen name="drawer_email_tex_size">18sp</dimen>
+    <dimen name="drawer_main_text_size">35sp</dimen>
+    <dimen name="very_big_margin">60dp</dimen>
 </resources>

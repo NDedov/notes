@@ -22,6 +22,7 @@
                 android:layout_height="wrap_content"
                 style="@style/TitleStyle"
                 android:text="TextView"
+                android:hint="@string/note_title_hint"
                 />
 
             <LinearLayout
@@ -48,8 +49,10 @@
             <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/textView"
                 style="@style/TextStyle"
+                android:gravity="top"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:hint="@string/note_text_hint"
                 android:text="TextView" />
         </LinearLayout>
 
@@ -71,8 +74,8 @@
             android:layout_weight="1"/>
         <androidx.appcompat.widget.AppCompatButton
             style="@style/ButtonVerticalNoteStyle"
-            android:id="@+id/undoButton"
-            android:text="@string/undo_text_button"
+            android:id="@+id/deleteButton"
+            android:text="@string/delete_text_button"
             android:layout_weight="1"/>
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/saveButton"

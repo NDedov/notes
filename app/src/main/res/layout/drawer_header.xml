@@ -8,18 +8,19 @@
     android:orientation="vertical"
     >
     <ImageView
-        android:layout_width="120dp"
-        android:layout_height="120dp"
+        android:layout_width="140dp"
+        android:layout_height="140dp"
+        android:layout_gravity="center"
         android:contentDescription="@string/drawer_header"
         android:src="@drawable/ic_notes_notebook"
-        android:layout_marginStart="@dimen/note_big_margin"
+
         />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/drawer_header"
         android:textColor="@color/white"
-        android:textSize="35sp"
+        android:textSize="@dimen/drawer_main_text_size"
         android:layout_marginTop="@dimen/note_big_margin"
         android:layout_marginStart="@dimen/note_big_margin"
         />
@@ -27,8 +28,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/email"
+
         android:textColor="@color/white"
-        android:textSize="20sp"
+        android:textSize="@dimen/drawer_email_tex_size"
         android:layout_marginStart="@dimen/note_big_margin"
         />
 
