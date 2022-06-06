@@ -21,7 +21,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 style="@style/TitleStyle"
-                android:text="TextView"
                 android:hint="@string/note_title_hint"
                 />
 
@@ -52,8 +51,7 @@
                 android:gravity="top"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:hint="@string/note_text_hint"
-                android:text="TextView" />
+                android:hint="@string/note_text_hint" />
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>

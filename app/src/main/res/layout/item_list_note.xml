@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:elevation="8dp"
+    android:id="@+id/cardViewListNote"
+    android:layout_margin="4dp"
+    android:backgroundTint="?attr/colorOnPrimary"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    app:cardCornerRadius="10dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <LinearLayout
+            android:id="@+id/linearCardView"
+            android:layout_width="0dp"
+            android:layout_weight="6"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/titleItemListNoteTextView"
+                android:layout_width="wrap_content"
+                android:maxLines="1"
+                android:layout_marginTop="@dimen/note_norm_margin"
+                android:layout_marginBottom="@dimen/note_big_margin"
+                android:ellipsize="end"
+                android:textStyle="bold"
+                android:textSize="@dimen/list_title_size"
+                style="@style/TextStyle"
+                android:layout_height="wrap_content"
+                tools:text="Заголовок"/>
+            <TextView
+                android:id="@+id/textItemListNoteTextView"
+                style="@style/TextStyle"
+                android:textSize="@dimen/list_text_size"
+                android:maxLines="1"
+                android:layout_marginBottom="0dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Короткий текст"/>
+            <TextView
+                android:id="@+id/dateItemListNoteTextView"
+                style="@style/TextStyle"
+                android:textSize="@dimen/list_text_size"
+                android:maxLines="1"
+                android:layout_marginTop="0dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="?attr/colorPrimaryVariant"
+                tools:text="06 июня 2022 22:05"/>
+
+        </LinearLayout>
+        <FrameLayout
+            android:id="@+id/favoriteLayout"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical">
+            <ImageView
+                android:id="@+id/favoriteImageItemListNote"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:srcCompat="@drawable/ic_favorite_yes">
+
+            </ImageView>
+        </FrameLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

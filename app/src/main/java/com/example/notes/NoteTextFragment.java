@@ -42,6 +42,8 @@ public class NoteTextFragment extends Fragment implements Constants, DeleteDialo
     Spinner categorySpinner; // список категорий
     TextView textView; // текст заметки
 
+    TextViewUndoRedo helperTextView;
+
     boolean flagForSpinner = false;// флаг для вызова обработчика только по нажатию,
     // что бы не срабатывал при инициализации
 
@@ -98,6 +100,8 @@ public class NoteTextFragment extends Fragment implements Constants, DeleteDialo
 
         if (!isLandscape())
             setActionBar(view);
+
+
     }
 
     @Override
@@ -107,9 +111,6 @@ public class NoteTextFragment extends Fragment implements Constants, DeleteDialo
         super.onSaveInstanceState(outState);
 
     }
-
-
-
 
     private void updateNoteList() {//метод для обновления основного списка заметок (NoteListFragment)
         Bundle result = new Bundle();
@@ -132,6 +133,7 @@ public class NoteTextFragment extends Fragment implements Constants, DeleteDialo
         deleteButton = view.findViewById(R.id.deleteButton);
         saveButton = view.findViewById(R.id.saveButton);
         printValues();
+
         initButtons();
         initListeners();
         InitEditListeners(view);
@@ -218,16 +220,20 @@ public class NoteTextFragment extends Fragment implements Constants, DeleteDialo
                 updateNoteList();
                 if (isLandscape()){
                     displayToast(getString(R.string.save_ok));
+                    helperTextView = new TextViewUndoRedo(textView);
                     noteIsChanged = false;
                     setSaveButton();
+
                     //setIconMenu();
                 }
                 else {
                     displayToast(getString(R.string.save_ok));
                     noteIsChanged = false;
+                    helperTextView = new TextViewUndoRedo(textView);
                     setIconMenu();
                     setSaveButton();
                     requireActivity().getSupportFragmentManager().popBackStack();
+
                 }
             }
         });
@@ -262,9 +268,7 @@ public class NoteTextFragment extends Fragment implements Constants, DeleteDialo
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        menu.clear();
         inflater.inflate(R.menu.text_menu, menu);
-   //     toolbarMenu = menu;
         setIconMenu();
     }
 
@@ -273,20 +277,36 @@ public class NoteTextFragment extends Fragment implements Constants, DeleteDialo
         if (toolbar != null) {
             Menu menu = toolbar.getMenu();
             MenuItem itemSave = menu.findItem(R.id.action_text_save);
+            MenuItem itemUndo = menu.findItem(R.id.action_text_undo);
+            MenuItem itemRedo = menu.findItem(R.id.action_text_redo);
             if (itemSave != null) {
                 if (noteIsChanged) {
                     menu.findItem(R.id.action_text_save).setIcon(R.drawable.ic_save);
                     menu.findItem(R.id.action_text_save).setEnabled(true);
-                }
-
-                else {
+                } else {
                     menu.findItem(R.id.action_text_save).setIcon(R.drawable.ic_save_grey);
                     menu.findItem(R.id.action_text_save).setEnabled(false);
                 }
             }
+            if (itemRedo != null) {
+                if (helperTextView.getCanRedo()) {
+                    menu.findItem(R.id.action_text_redo).setIcon(R.drawable.ic_redo_new);
+                    menu.findItem(R.id.action_text_redo).setEnabled(true);
+                } else {
+                    menu.findItem(R.id.action_text_redo).setIcon(R.drawable.ic_redo_new_grey);
+                    menu.findItem(R.id.action_text_redo).setEnabled(false);
+                }
+            }
+            if (itemUndo != null) {
+                if (helperTextView.getCanUndo()) {
+                    menu.findItem(R.id.action_text_undo).setIcon(R.drawable.ic_undo_new);
+                    menu.findItem(R.id.action_text_undo).setEnabled(true);
+                } else {
+                    menu.findItem(R.id.action_text_undo).setIcon(R.drawable.ic_undo_new_grey);
+                    menu.findItem(R.id.action_text_undo).setEnabled(false);
+                }
+            }
         }
-
-        // todo раскрску redo undo
     }
 
 
@@ -296,6 +316,7 @@ public class NoteTextFragment extends Fragment implements Constants, DeleteDialo
         switch (item.getItemId()){
             case R.id.action_text_save:
                 if (noteIsChanged){ //отрабатываем сохранение если заметка изменилась
+                    helperTextView = new TextViewUndoRedo(textView);
                     updateNoteList();
                     displayToast(getString(R.string.save_ok));
                     noteIsChanged = false;
@@ -304,12 +325,12 @@ public class NoteTextFragment extends Fragment implements Constants, DeleteDialo
                 }
                 return true;
             case R.id.action_text_redo:
-                textView.onTextContextMenuItem(android.R.id.redo);
-                titleView.onTextContextMenuItem(android.R.id.redo);
+                helperTextView.redo();
+                setIconMenu();
                 return true;
             case R.id.action_text_undo:
-                textView.onTextContextMenuItem(android.R.id.undo);
-                titleView.onTextContextMenuItem(android.R.id.undo);
+                helperTextView.undo();
+                setIconMenu();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -328,6 +349,8 @@ public class NoteTextFragment extends Fragment implements Constants, DeleteDialo
                 android.R.layout.simple_spinner_item, Note.categories);
         categorySpinner.setAdapter(categoryAdapter);
         categorySpinner.setSelection(note.getCategoryID());
+
+        helperTextView = new TextViewUndoRedo(textView);
     }
 
 

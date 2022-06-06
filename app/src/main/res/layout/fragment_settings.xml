@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/settingsLinearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/buttonSettingsSave"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="spread_inside">
+
+        <TextView
+            android:id="@+id/textView3"
+            style="@style/TextStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/note_big_margin"
+            android:minHeight="48dp"
+            android:text="@string/settings_text"
+            android:textSize="@dimen/note_title_text_size" />
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/switchTheme"
+            style="@style/TextStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/note_big_margin"
+            android:text="@string/night_theme_text" />
+
+        <TextView
+            android:id="@+id/textView5"
+            style="@style/TextStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/note_norm_margin"
+            android:layout_marginBottom="0dp"
+
+            android:text="@string/language_text" />
+
+        <RadioGroup
+            android:id="@+id/radioGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.appcompat.widget.AppCompatRadioButton
+                android:id="@+id/radioButtonRus"
+                style="@style/TextStyle"
+                android:layout_width="match_parent"
+
+                android:layout_height="@dimen/radiobutton_height"
+                android:layout_marginTop="0dp"
+
+                android:layout_marginBottom="0dp"
+                android:text="@string/russian" />
+
+            <androidx.appcompat.widget.AppCompatRadioButton
+                android:id="@+id/radioButtonEng"
+
+                style="@style/TextStyle"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/radiobutton_height"
+                android:layout_marginTop="0dp"
+                android:layout_marginBottom="0dp"
+                android:text="@string/english" />
+
+        </RadioGroup>
+    </LinearLayout>
+
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/buttonSettingsSave"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/save"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/settingsLinearLayout" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
