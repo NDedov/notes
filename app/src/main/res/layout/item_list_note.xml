@@ -15,12 +15,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
+
         <LinearLayout
             android:id="@+id/linearCardView"
             android:layout_width="0dp"
+            android:layout_height="100dp"
             android:layout_weight="6"
-            android:layout_height="wrap_content"
             android:orientation="vertical">
+
             <TextView
                 android:id="@+id/titleItemListNoteTextView"
                 android:layout_width="wrap_content"
@@ -54,6 +56,7 @@
                 tools:text="06 июня 2022 22:05"/>
 
         </LinearLayout>
+
         <FrameLayout
             android:id="@+id/favoriteLayout"
             android:layout_width="0dp"

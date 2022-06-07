@@ -30,6 +30,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
@@ -286,12 +288,16 @@ public class NoteListFragment extends Fragment implements Constants {
             }
 
             @Override
-            public void onFavoriteClick(Note note) {
+            public void onFavoriteClick(Note note, View itemView) {//при нажатии на звездочку добавляем или удаляем из избранного
                 note.setFavourite(!note.isFavourite());
-                initListNotes(view);
+                if (note.isFavourite())
+                    itemView.<ImageView>findViewById(R.id.favoriteImageItemListNote)
+                            .setImageResource(R.drawable.ic_favorite_yes);
+                else
+                    itemView.<ImageView>findViewById(R.id.favoriteImageItemListNote)
+                            .setImageResource(R.drawable.ic_favorite_no);
             }
         });
-
 
         /*
         LinearLayout layout = view.findViewById(R.id.linearListView);

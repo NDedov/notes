@@ -72,7 +72,14 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.NoteLi
             super(itemView);
             this.itemView = itemView;
 
-            itemView.findViewById(R.id.cardViewListNote).setOnClickListener(new View.OnClickListener() {
+            /*itemView.findViewById(R.id.cardViewListNote).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Note note = list.get(getAdapterPosition());
+                    listener.onClick(note);
+                }
+            });*/
+            itemView.findViewById(R.id.linearCardView).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Note note = list.get(getAdapterPosition());
@@ -80,6 +87,7 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.NoteLi
                 }
             });
 
+/*
             itemView.findViewById(R.id.textItemListNoteTextView).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -103,13 +111,15 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.NoteLi
                     Note note = list.get(getAdapterPosition());
                     listener.onClick(note);
                 }
-            });
+            });*/
 
             itemView.findViewById((R.id.favoriteLayout)).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+
                     Note note = list.get(getAdapterPosition());
-                    listener.onFavoriteClick(note);
+
+                    listener.onFavoriteClick(note, itemView);
                 }
             });
 
