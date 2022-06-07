@@ -1,6 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Заметки</string>
-
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="favorite_text_button">Избранное</string>
     <string name="undo_text_button">Отменить</string>
@@ -25,8 +25,10 @@
     <string name="undo">Отменить</string>
     <string name="back">Назад</string>
     <string name="delete_text_button">Удалить</string>
-    <string name="next">Next</string>
-    <string name="previous">Previous</string>
+
+    <string name="next">Следующий</string>
+    <string name="previous">Предыдущий</string>
+
     <string name="note_text_hint">Текст…</string>
     <string name="note_title_hint">Название…</string>
     <string name="attention">Внимание</string>

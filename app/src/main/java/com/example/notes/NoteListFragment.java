@@ -4,17 +4,24 @@ import android.animation.Animator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.text.Editable;
 import android.text.Html;
+import android.text.Spanned;
 import android.text.TextWatcher;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,16 +30,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 
 public class NoteListFragment extends Fragment implements Constants {
 
@@ -40,43 +53,55 @@ public class NoteListFragment extends Fragment implements Constants {
     Button filterButton,filterFavoriteButton;
     FloatingActionButton addButton;
 
-
+    Settings settings;
     Filter filter;
     EditText textSearchView;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         //В момент создания нового фрагмента мы проверяем, создается ли этот фрагмент впервые, и
         //если да, то просто удаляем его из бэкстека.
-        if (savedInstanceState != null)
-          requireActivity().getSupportFragmentManager().popBackStack();
+        FragmentManager fragmentManager =
+                requireActivity().getSupportFragmentManager();
+        List<Fragment> fragments = fragmentManager.getFragments();
+        for (Fragment fragment : fragments) {
+            if (!(fragment instanceof NoteListFragment))
+                fragmentManager.beginTransaction().remove(fragment).commit();
+        }
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        setHasOptionsMenu(true);
+
         return inflater.inflate(R.layout.fragment_note_list, container, false);
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, @NonNull MenuInflater inflater) {
-        MenuItem item = menu.findItem(R.id.action_text_redo);//скрываем ненужные пункты меню
-        if (item != null) {
-            item.setVisible(false);
-        }
-        item = menu.findItem(R.id.action_text_undo);
-        if (item != null) {
-            item.setVisible(false);
-        }
-        item = menu.findItem(R.id.action_text_save);
-        if (item != null) {
-            item.setVisible(false);
-        }
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.list_menu, menu);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        if (item.getItemId() == R.id.action_list_settings) {
+            showSettingsFragment();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void showSettingsFragment() {
+        getParentFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragmentContainer, SettingsFragment.newInstance(settings))
+                .addToBackStack("")
+                .commit();
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
@@ -86,7 +111,12 @@ public class NoteListFragment extends Fragment implements Constants {
         if (savedInstanceState != null) {
             notes = savedInstanceState.getParcelable(NOTES_LIST);
             filter = savedInstanceState.getParcelable(FILTER_INDEX);
+            settings = savedInstanceState.getParcelable(SETTINGS_TAG);
+        }
 
+        Bundle arguments = getArguments();//получаем настройки при открытии фрагмента
+        if (arguments != null){
+            settings = arguments.getParcelable(SETTINGS_TAG);
         }
 
         if (notes == null) {//заполнение тестовыми заметками при первом запуске
@@ -99,10 +129,13 @@ public class NoteListFragment extends Fragment implements Constants {
         initListNotes(view);
         initSearch(view);
         initFragmentResultListeners(view);
+        setHasOptionsMenu(true);
         ((MainActivity)requireActivity()).initToolbarAndDrawer(); //инициализация для Toolbar и Drawer
 
         if (isLandscape())
             showLandNotes(notes.getCurrentNote());
+
+
     }
 
     private void initSearch(View view) {
@@ -150,8 +183,35 @@ public class NoteListFragment extends Fragment implements Constants {
                     filter.setCurrentFilterCategory(result.getInt(FILTER_INDEX, Filter.defaultFilterCategory));
                     initListNotes(view);
                 });
+        //листенер, обрабатывающий изменение в настройках
+        getParentFragmentManager().setFragmentResultListener(SETTINGS_CHANGED_TAG, this,
+                (key, bundle) -> {
+                    applySettings();
+                });
+    }
+
+    private void applySettings() {
+        if (settings.getNightMode().equals(Settings.NIGHT_MODE_YES))
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        else
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        applyLanguage();
+    }
+
+    private void applyLanguage() {
+        Resources res = getResources();
+        // Change locale settings in the app.
+        DisplayMetrics dm = res.getDisplayMetrics();
+        android.content.res.Configuration conf = res.getConfiguration();
+        if (settings.getLanguage().equals(Settings.ENGLISH))
+            conf.setLocale(new Locale("en")); // API 17+ only.
+        // Use conf.locale = new Locale(...) if targeting lower versions
+        if (settings.getLanguage().equals(Settings.RUSSIAN))
+            conf.setLocale(new Locale("ru")); // API 17+ only.
+        res.updateConfiguration(conf, dm);
 
     }
+
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void initButtons(View view) {
@@ -179,7 +239,6 @@ public class NoteListFragment extends Fragment implements Constants {
 
         addButton = view.findViewById(R.id.addFab);
         addButton.setOnClickListener(view1 -> {
-
             notes.add(new Note("", "", new GregorianCalendar(), 0, false));
             showNotes(notes.getCurrentNote());
         });
@@ -205,10 +264,42 @@ public class NoteListFragment extends Fragment implements Constants {
                 == Configuration.ORIENTATION_LANDSCAPE;
     }
 
-
     @RequiresApi(api = Build.VERSION_CODES.N)
-    @SuppressLint("SimpleDateFormat")
     private void initListNotes(View view) {
+        ArrayList<Note> list = new ArrayList<>();
+
+        for (Note note: notes.getNotes()){//заполняем список по фильтру
+            if (filter.isShow(note))
+                list.add(note);
+        }
+
+        RecyclerView recyclerView = view.findViewById(R.id.recyclerViewNoteList);
+        LinearLayoutManager llm = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(llm);
+
+        NoteListAdapter adapter = new NoteListAdapter();
+        adapter.setList(list);
+        recyclerView.setAdapter(adapter);
+        adapter.setListener(new NotesListClickListener() {
+            @Override
+            public void onClick(Note note) {
+                notes.setCurrentNote(note);
+                showNotes(note);
+            }
+
+            @Override
+            public void onFavoriteClick(Note note, View itemView) {//при нажатии на звездочку добавляем или удаляем из избранного
+                note.setFavourite(!note.isFavourite());
+                if (note.isFavourite())
+                    itemView.<ImageView>findViewById(R.id.favoriteImageItemListNote)
+                            .setImageResource(R.drawable.ic_favorite_yes);
+                else
+                    itemView.<ImageView>findViewById(R.id.favoriteImageItemListNote)
+                            .setImageResource(R.drawable.ic_favorite_no);
+            }
+        });
+
+        /*
         LinearLayout layout = view.findViewById(R.id.linearListView);
         layout.removeAllViews();
         int tvAmount = 0;
@@ -220,10 +311,7 @@ public class NoteListFragment extends Fragment implements Constants {
                 // view для заметок по шаблону
 
                 //выводим информацию по заметке в view
-                tv.setText(Html.fromHtml("<strong>" + notes.get(i).getTitle() +
-                        "</strong><small><br/><br/>"+ preview(notes.get(i).getText()) +
-                        "</small><br/><small>" + new SimpleDateFormat("dd MMMM yyyy  HH:mm")
-                        .format(notes.get(i).getDateTimeModify().getTime())));
+                tv.setText(makeTextList(notes.get(i)));
 
                 //корректируем параметры view - отступы
                 LinearLayout.LayoutParams textViewLayoutParams =
@@ -240,28 +328,44 @@ public class NoteListFragment extends Fragment implements Constants {
 
                 //прописываем Листенеры для вью
                 final Note note_position = notes.get(i);
-//                final int position = i;
                 tv.setOnClickListener(v -> {
                     notes.setCurrentNote(note_position);
                     showNotes(note_position);
                 });
-
                 //прописываем попап меню
                 initPopupMenu(tv,layout, note_position);
             }
         }
-        if (tvAmount == 0){//если нет заметок, то выводим информацию о том, что список пуст
-            TextView tv = new TextView(getContext());
-            tv.setText("Список пуст...");
-            LinearLayout.LayoutParams textViewLayoutParams =
-                    new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                            LinearLayout.LayoutParams.WRAP_CONTENT);
-            textViewLayoutParams.setMargins(16,24,16,12);
-            tv.setLayoutParams(textViewLayoutParams);
-            tv.setTextSize(18);
-            layout.addView(tv);
-        }
+        if (tvAmount == 0)//если нет заметок, то выводим информацию о том, что список пуст
+            showEmptyList(layout);*/
     }
+
+/*
+
+    @SuppressLint("SimpleDateFormat")
+    private Spanned makeTextList(Note note) {
+        return Html.fromHtml("<strong>" + note.getTitle() +
+                "</strong><small><br/><br/>"+ preview(note.getText()) +
+                "</small><br/><small>" + new SimpleDateFormat("dd MMMM yyyy  HH:mm")
+                .format(note.getDateTimeModify().getTime()));
+    }
+*/
+    /**
+     * Создает текствью в layout и выводит сообщение о том, что список пуст
+     * @param layout входной layout
+     */
+    private void showEmptyList(LinearLayout layout) {
+        TextView tv = new TextView(getContext());
+        tv.setText("Список пуст...");
+        LinearLayout.LayoutParams textViewLayoutParams =
+                new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT);
+        textViewLayoutParams.setMargins(16,24,16,12);
+        tv.setLayoutParams(textViewLayoutParams);
+        tv.setTextSize(18);
+        layout.addView(tv);
+    }
+
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void initPopupMenu(TextView tv, LinearLayout layout, Note note_position) {
@@ -314,6 +418,14 @@ public class NoteListFragment extends Fragment implements Constants {
 
         });
 
+    }
+
+    public static NoteListFragment newInstance(Settings settings) {
+        NoteListFragment noteListFragment = new NoteListFragment();
+        Bundle args = new Bundle();
+        args.putParcelable(SETTINGS_TAG, settings);
+        noteListFragment.setArguments(args);
+        return noteListFragment;
     }
 
     private void drawFavorite(TextView tv) {
@@ -387,6 +499,7 @@ public class NoteListFragment extends Fragment implements Constants {
     public void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putParcelable(NOTES_LIST, notes);
         outState.putParcelable(FILTER_INDEX,filter);
+        outState.putParcelable(SETTINGS_TAG, settings);
         super.onSaveInstanceState(outState);
     }
 }

@@ -19,4 +19,6 @@ interface Constants {
     String DELETE_NOTE_DIALOG_TAG = "DELETE_NOTE_DIALOG_TAG";// тэг для диалогового окна удаления заметки
     // сохранения
     String NOTE_IS_CHANGED_TAG = "NOTE_IS_CHANGED_TAG"; //тэг для сохранения флага об изменении заметки
+    String SETTINGS_TAG = "SETTINGS_TAG"; //тэг для передачи настроек
+    String SETTINGS_CHANGED_TAG = "SETTINGS_CHANGED_TAG"; //тэг отмечающий изменение настроек
 }

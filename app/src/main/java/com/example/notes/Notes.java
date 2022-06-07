@@ -51,6 +51,10 @@ public class Notes implements Parcelable {
         notes.sort(comparator);
     }
 
+    public ArrayList<Note> getNotes() {
+        return notes;
+    }
+
     public Note get(int position){
         return notes.get(position);
     }

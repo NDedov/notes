@@ -27,9 +27,9 @@
         android:fitsSystemWindows="true"
         app:contentScrim="?attr/colorPrimary">
         <androidx.constraintlayout.widget.ConstraintLayout
+            style="@style/LayoutStyle"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/white"
             android:orientation="horizontal">
 
             <androidx.appcompat.widget.AppCompatEditText
@@ -82,19 +82,15 @@
     </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.core.widget.NestedScrollView
+    <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
+        android:orientation="vertical"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        >
-        <LinearLayout
-            android:id="@+id/linearListView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-        </LinearLayout>
+        android:id="@+id/recyclerViewNoteList"
+        tools:listitem="@layout/item_list_note"
+        />
 
-    </androidx.core.widget.NestedScrollView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addFab"

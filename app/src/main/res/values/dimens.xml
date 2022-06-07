@@ -17,4 +17,7 @@
     <dimen name="drawer_email_tex_size">18sp</dimen>
     <dimen name="drawer_main_text_size">35sp</dimen>
     <dimen name="very_big_margin">60dp</dimen>
+    <dimen name="radiobutton_height">32dp</dimen>
+    <dimen name="list_title_size">18sp</dimen>
+    <dimen name="list_text_size">14sp</dimen>
 </resources>
