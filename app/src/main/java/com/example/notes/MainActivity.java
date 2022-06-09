@@ -28,7 +28,7 @@ import com.google.android.material.navigation.NavigationView;
 import java.util.Locale;
 
 
-public class MainActivity extends AppCompatActivity implements Constants {
+public class MainActivity extends AppCompatActivity implements Constants,IDrawerFromFragment {
 
     long backPressedTime;
 
@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements Constants {
 
         initFragments(savedInstanceState);
         initListenerSettings();
-        applyLanguage();
+//        applyLanguage();
     }
 
     @Override
@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements Constants {
             @Override
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
                 settings = result.getParcelable(SETTINGS_TAG);
-                applySettings();
+                //applySettings();
             }
         });
     }
@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements Constants {
     private void initFragments(Bundle savedInstanceState) {
         if (savedInstanceState == null) {
             openNoteListFragment();
-            applySettings();
+//            applySettings();
 
             if (isLandscape()) {//скрываем контейнер с заметкой для первого запуска
                 FrameLayout fl = findViewById(R.id.fragmentNoteContainer);
@@ -109,11 +109,11 @@ public class MainActivity extends AppCompatActivity implements Constants {
      * язык и Ночной режим
      */
     private void applySettings() {
-
         if (settings.getNightMode().equals(Settings.NIGHT_MODE_YES))
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         else
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+
         applyLanguage();
     }
 
@@ -247,6 +247,20 @@ public class MainActivity extends AppCompatActivity implements Constants {
                  backPressedTime = System.currentTimeMillis();
              }
          }
+    }
+
+    @Override
+    public void initDrawer() {
+        initToolbarAndDrawer();
+    }
+
+    @Override
+    public void updateDrawer() {
+
+        NavigationView navigationView = findViewById(R.id.navigation_view);
+        navigationView.getMenu().clear();
+        navigationView.inflateMenu(R.menu.drawer_menu);
+
     }
 }
 

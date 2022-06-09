@@ -1,11 +1,13 @@
 package com.example.notes;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -39,10 +41,20 @@ public class AboutFragment extends Fragment implements OnBackPressedListener{
             requireActivity().getSupportFragmentManager().popBackStack();//закрываем
         });
 
+        hideKeyBoard();
+
     }
 
     @Override
     public void onBackPressed() {
         requireActivity().getSupportFragmentManager().popBackStack();
+    }
+
+    void hideKeyBoard(){
+        View view1 = requireActivity().getCurrentFocus();
+        if (view1 != null) {//скрытие клавиатуры при выходе
+            InputMethodManager imm = (InputMethodManager)requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view1.getWindowToken(), 0);
+        }
     }
 }

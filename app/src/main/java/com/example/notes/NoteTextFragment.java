@@ -1,6 +1,7 @@
 package com.example.notes;
 
 import android.annotation.SuppressLint;
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,6 +30,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 public class NoteTextFragment extends Fragment implements Constants, DeleteDialogListener,OnBackPressedListener {
@@ -141,6 +145,7 @@ public class NoteTextFragment extends Fragment implements Constants, DeleteDialo
 
 
     private void InitEditListeners(View view) {// обработчик изменений едитов и спиннера
+
         textView.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -206,9 +211,16 @@ public class NoteTextFragment extends Fragment implements Constants, DeleteDialo
     }
 
     private void initListeners() {//обработчики кнопок в нижнем "меню"
-        dateTimeView.setOnClickListener(view -> showDateTimeFragment(note));
+        dateTimeView.setOnClickListener(view -> {
+            hideKeyBoard();
+       //     showDateTimeFragment(note);
+            showDateTimeDialog(note);
+
+
+        });
 
         deleteButton.setOnClickListener(view -> {//обработка кнопки удалить
+            hideKeyBoard();
             DeleteNoteDialogFragment deleteNoteDialogFragment = new DeleteNoteDialogFragment();
             deleteNoteDialogFragment.setListener(NoteTextFragment.this);
             deleteNoteDialogFragment.show(requireActivity().getSupportFragmentManager(),
@@ -216,6 +228,7 @@ public class NoteTextFragment extends Fragment implements Constants, DeleteDialo
         });
 
         saveButton.setOnClickListener(view -> {//обработка кнопки сохранить
+            hideKeyBoard();
             if (noteIsChanged){
                 updateNoteList();
                 if (isLandscape()){
@@ -247,20 +260,42 @@ public class NoteTextFragment extends Fragment implements Constants, DeleteDialo
         });
     }
 
+    private void showDateTimeDialog(Note note) {//диалог по смене "даты". Меняет только визуально
+
+        new DatePickerDialog(requireContext(), 0, new DatePickerDialog.OnDateSetListener() {
+            @SuppressLint("SimpleDateFormat")
+            @Override
+            public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+
+                Calendar tmpCalendar = new GregorianCalendar();
+                tmpCalendar.set(Calendar.YEAR, datePicker.getYear());
+                tmpCalendar.set(Calendar.MONTH, datePicker.getMonth());
+                tmpCalendar.set(Calendar.DAY_OF_MONTH, datePicker.getDayOfMonth());
+                dateTimeView.setText(new SimpleDateFormat("dd MMMM yyyy")
+                        .format(tmpCalendar.getTime()));
+
+            }
+        }, note.getDateTimeModify().get(Calendar.YEAR),
+                note.getDateTimeModify().get(Calendar.MONTH),
+                note.getDateTimeModify().get(Calendar.DAY_OF_MONTH)).show();
+    }
+
+    void hideKeyBoard(){
+        View view1 = requireActivity().getCurrentFocus();
+        if (view1 != null) {//скрытие клавиатуры при выходе
+            InputMethodManager imm = (InputMethodManager)requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view1.getWindowToken(), 0);
+        }
+    }
+
     private void setActionBar(@NonNull View view) {//обработчик кнопки выхода в toolBar
         Toolbar toolbar = view.findViewById(R.id.toolbarNoteText);
         ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_back);
         toolbar.setNavigationOnClickListener(v -> {//при нажатии на выход в тулбаре
-            View view1 = requireActivity().getCurrentFocus();
-            if (view1 != null) {//скрытие клавиатуры при выходе
-                InputMethodManager imm = (InputMethodManager)requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(view1.getWindowToken(), 0);
-            }
-
+            hideKeyBoard();
             if (noteIsChanged)
                 updateNoteList();
-
             requireActivity().getSupportFragmentManager().popBackStack();
         });
         setHasOptionsMenu(true);
