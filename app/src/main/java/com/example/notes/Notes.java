@@ -61,6 +61,9 @@ public class Notes implements Parcelable {
 
     public void delete(Note note){
         notes.remove(note);
+        if (currentNote.equals(note))
+            if (notes.size()>0)
+                this.currentNote = notes.get(0);
     }
 
     public int size(){
@@ -69,9 +72,9 @@ public class Notes implements Parcelable {
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void add(Note note){
-        notes.add(note);
+        notes.add(0, note);
         currentNote = note;
-        notes.sort(comparator);
+        //notes.sort(comparator);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)

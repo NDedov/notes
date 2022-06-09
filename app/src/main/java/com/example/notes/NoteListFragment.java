@@ -57,6 +57,8 @@ public class NoteListFragment extends Fragment implements Constants {
     Filter filter;
     EditText textSearchView;
 
+
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
 
@@ -130,11 +132,11 @@ public class NoteListFragment extends Fragment implements Constants {
         initSearch(view);
         initFragmentResultListeners(view);
         setHasOptionsMenu(true);
-        ((MainActivity)requireActivity()).initToolbarAndDrawer(); //инициализация для Toolbar и Drawer
 
         if (isLandscape())
             showLandNotes(notes.getCurrentNote());
-
+        else
+            ((IDrawerFromFragment)requireActivity()).initDrawer();
 
     }
 
@@ -184,32 +186,10 @@ public class NoteListFragment extends Fragment implements Constants {
                     initListNotes(view);
                 });
         //листенер, обрабатывающий изменение в настройках
-        getParentFragmentManager().setFragmentResultListener(SETTINGS_CHANGED_TAG, this,
-                (key, bundle) -> {
-                    applySettings();
-                });
-    }
-
-    private void applySettings() {
-        if (settings.getNightMode().equals(Settings.NIGHT_MODE_YES))
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-        else
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        applyLanguage();
-    }
-
-    private void applyLanguage() {
-        Resources res = getResources();
-        // Change locale settings in the app.
-        DisplayMetrics dm = res.getDisplayMetrics();
-        android.content.res.Configuration conf = res.getConfiguration();
-        if (settings.getLanguage().equals(Settings.ENGLISH))
-            conf.setLocale(new Locale("en")); // API 17+ only.
-        // Use conf.locale = new Locale(...) if targeting lower versions
-        if (settings.getLanguage().equals(Settings.RUSSIAN))
-            conf.setLocale(new Locale("ru")); // API 17+ only.
-        res.updateConfiguration(conf, dm);
-
+//        getParentFragmentManager().setFragmentResultListener(SETTINGS_CHANGED_TAG, this,
+//                (key, bundle) -> {
+//                    applySettings();
+//                });
     }
 
 
@@ -280,7 +260,7 @@ public class NoteListFragment extends Fragment implements Constants {
         NoteListAdapter adapter = new NoteListAdapter();
         adapter.setList(list);
         recyclerView.setAdapter(adapter);
-        adapter.setListener(new NotesListClickListener() {
+        adapter.setListener(new NotesListClickListener() {//реализация интерфейса для обработки адаптера recycleView
             @Override
             public void onClick(Note note) {
                 notes.setCurrentNote(note);
@@ -297,59 +277,39 @@ public class NoteListFragment extends Fragment implements Constants {
                     itemView.<ImageView>findViewById(R.id.favoriteImageItemListNote)
                             .setImageResource(R.drawable.ic_favorite_no);
             }
-        });
 
-        /*
-        LinearLayout layout = view.findViewById(R.id.linearListView);
-        layout.removeAllViews();
-        int tvAmount = 0;
-        for (int i = 0; i < notes.size(); i++){
+            @Override
+            public void onLongClick(Note note, View view, int position) {
 
-            if (filter.isShow(notes.get(i))){
-                @SuppressLint("InflateParams") TextView tv =
-                        (TextView)getLayoutInflater().inflate(R.layout.tvtemplate, null);// добавляем
-                // view для заметок по шаблону
+                Activity activity = requireActivity();
+                PopupMenu popupMenu = new PopupMenu(activity, view);
+                activity.getMenuInflater().inflate(R.menu.list_popup, popupMenu.getMenu());
 
-                //выводим информацию по заметке в view
-                tv.setText(makeTextList(notes.get(i)));
+                popupMenu.setOnMenuItemClickListener(menuItem -> {//инициализация пунктов меню
+                    switch (menuItem.getItemId()){
+                        case (R.id.action_popup_edit):
+                            notes.setCurrentNote(note);
+                            showNotes(note);
+                            return true;
+                        case (R.id.action_popup_to_favorite):
+                            note.setFavourite(true);
+                            adapter.notifyItemChanged(position);
+                            return true;
 
-                //корректируем параметры view - отступы
-                LinearLayout.LayoutParams textViewLayoutParams =
-                        new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                                LinearLayout.LayoutParams.WRAP_CONTENT);
-                textViewLayoutParams.setMargins(16,12,16,12);
-                tv.setLayoutParams(textViewLayoutParams);
-
-                if (notes.get(i).isFavourite())//рисуем звездочку на избранном
-                    drawFavorite(tv);
-
-                layout.addView(tv);
-                tvAmount++;
-
-                //прописываем Листенеры для вью
-                final Note note_position = notes.get(i);
-                tv.setOnClickListener(v -> {
-                    notes.setCurrentNote(note_position);
-                    showNotes(note_position);
+                        case (R.id.action_popup_delete):
+                            notes.delete(note);
+                            adapter.notifyItemRemoved(position);
+                            if (isLandscape())
+                                showLandNotes(notes.getCurrentNote());
+                            return true;
+                    }
+                    return true;
                 });
-                //прописываем попап меню
-                initPopupMenu(tv,layout, note_position);
+                popupMenu.show();
+
             }
-        }
-        if (tvAmount == 0)//если нет заметок, то выводим информацию о том, что список пуст
-            showEmptyList(layout);*/
+        });
     }
-
-/*
-
-    @SuppressLint("SimpleDateFormat")
-    private Spanned makeTextList(Note note) {
-        return Html.fromHtml("<strong>" + note.getTitle() +
-                "</strong><small><br/><br/>"+ preview(note.getText()) +
-                "</small><br/><small>" + new SimpleDateFormat("dd MMMM yyyy  HH:mm")
-                .format(note.getDateTimeModify().getTime()));
-    }
-*/
     /**
      * Создает текствью в layout и выводит сообщение о том, что список пуст
      * @param layout входной layout
@@ -367,83 +327,12 @@ public class NoteListFragment extends Fragment implements Constants {
     }
 
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    private void initPopupMenu(TextView tv, LinearLayout layout, Note note_position) {
-        tv.setOnLongClickListener(view1 -> {
-            Activity activity = requireActivity();
-            PopupMenu popupMenu = new PopupMenu(activity, view1);
-            activity.getMenuInflater().inflate(R.menu.list_popup, popupMenu.getMenu());
-
-            popupMenu.setOnMenuItemClickListener(menuItem -> {//инициализация пунктов меню
-                switch (menuItem.getItemId()){
-                    case (R.id.action_popup_edit):
-                       // notes.setCurrentPosition(position);
-                        notes.setCurrentNote(note_position);
-                        showNotes(note_position);
-                        return true;
-                    case (R.id.action_popup_to_favorite):
-                        note_position.setFavourite(true);
-                        drawFavorite(tv);
-                        return true;
-                    case (R.id.action_popup_delete):
-                        notes.delete(note_position);
-                        tv.animate() //анимация на удаление
-                                .translationXBy(1000)
-                                .setDuration(150)
-                                .setListener(new Animator.AnimatorListener() {
-                                    @Override
-                                    public void onAnimationStart(Animator animator) {
-                                    }
-
-                                    @Override
-                                    public void onAnimationEnd(Animator animator) {
-                                        layout.removeView(tv);
-                                    }
-
-                                    @Override
-                                    public void onAnimationCancel(Animator animator) {
-                                    }
-
-                                    @Override
-                                    public void onAnimationRepeat(Animator animator) {
-                                    }
-                                })
-                                .start();
-                        return true;
-                }
-                return true;
-            });
-            popupMenu.show();
-            return true;
-
-        });
-
-    }
-
     public static NoteListFragment newInstance(Settings settings) {
         NoteListFragment noteListFragment = new NoteListFragment();
         Bundle args = new Bundle();
         args.putParcelable(SETTINGS_TAG, settings);
         noteListFragment.setArguments(args);
         return noteListFragment;
-    }
-
-    private void drawFavorite(TextView tv) {
-        tv.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_favorite_yes, 0);
-    }
-
-    /**
-     * Метод для создания превью текста заметки для списка заметок
-     * @param text входной текст
-     * @return обрезанный текст
-     */
-    private String preview(String text) {
-        text = text.replace("\n"," ");
-        text = text.replace("\t"," ");
-        text = text.replace("\r"," ");
-        if (text.length() < PREVIEW_LIST_LENGTH)
-            return text;
-        return text.substring(0,PREVIEW_LIST_LENGTH) + "...";
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
