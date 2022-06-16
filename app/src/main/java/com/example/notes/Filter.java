@@ -20,11 +20,18 @@ public class Filter implements Parcelable {
         isFavoriteShow = in.readByte() != 0;
         searchString = in.readString();
     }
-    public boolean isShow(Note note){//подходит ли Заметка под условия фильтра
+
+    /**
+     * Метод проверяющий подходит ли заметка под условия фильтра
+     * @param note заметка
+     * @return да/нет
+     */
+    public boolean isShow(Note note){
         boolean fFilter = false;
         boolean fFavorite = false;
         boolean fSearch = false;
-        if (note.getCategoryID() == currentFilterCategory || currentFilterCategory == defaultFilterCategory)
+        if (note.getCategoryID() == currentFilterCategory ||
+                currentFilterCategory == defaultFilterCategory)
             fFilter = true;
         if (!isFavoriteShow || note.isFavourite())
             fFavorite = true;
@@ -37,6 +44,22 @@ public class Filter implements Parcelable {
             fSearch = true;
 
         return fFilter && fFavorite && fSearch;
+    }
+
+    /**
+     * Метод проверяющий текущие настройки филььтра, что то фильтруют?
+     * @return да/нет
+     */
+    public boolean isFilterActive(){
+        boolean fSearchString = false;
+
+        if (searchString != null)
+            if (!searchString.equals(""))
+                fSearchString = true;
+
+        return (currentFilterCategory != defaultFilterCategory
+                || isFavoriteShow
+                || fSearchString);
     }
 
     public static final Creator<Filter> CREATOR = new Creator<Filter>() {
@@ -69,10 +92,6 @@ public class Filter implements Parcelable {
 
     public boolean isFavoriteShow() {
         return isFavoriteShow;
-    }
-
-    public String getSearchString() {
-        return searchString;
     }
 
     @Override

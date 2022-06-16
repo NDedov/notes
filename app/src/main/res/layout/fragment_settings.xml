@@ -27,7 +27,8 @@
 
         <com.google.android.material.switchmaterial.SwitchMaterial
             android:id="@+id/switchTheme"
-            style="@style/TextStyle"
+            android:layout_margin="@dimen/note_norm_margin"
+            android:textSize="@dimen/note_text_size"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/note_big_margin"
@@ -40,7 +41,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/note_norm_margin"
             android:layout_marginBottom="0dp"
-
             android:text="@string/language_text" />
 
         <RadioGroup
@@ -50,19 +50,14 @@
 
             <androidx.appcompat.widget.AppCompatRadioButton
                 android:id="@+id/radioButtonRus"
-                style="@style/TextStyle"
                 android:layout_width="match_parent"
-
                 android:layout_height="@dimen/radiobutton_height"
                 android:layout_marginTop="0dp"
-
                 android:layout_marginBottom="0dp"
                 android:text="@string/russian" />
 
             <androidx.appcompat.widget.AppCompatRadioButton
                 android:id="@+id/radioButtonEng"
-
-                style="@style/TextStyle"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/radiobutton_height"
                 android:layout_marginTop="0dp"

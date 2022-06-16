@@ -5,10 +5,7 @@ import android.os.Parcelable;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-
-
 public class Note implements Parcelable, Comparable{//класс для работы с заметкой
-
     public static String[] categories = {"Общее",
             "Работа",
             "Семья",
@@ -20,19 +17,16 @@ public class Note implements Parcelable, Comparable{//класс для рабо
             "Спорт"};
     private String title;
     private String text;
-    private Calendar dateTimeCreation;
     private Calendar dateTimeModify;
     private int categoryID;
     private boolean isFavourite;
 
-    public Note(String title, String text, Calendar dateTimeCreation, int categoryID, boolean isFavourite) {
+    public Note(String title, String text, Calendar dateTimeModify, int categoryID, boolean isFavourite) {
         this.title = title;
         this.text = text;
-        this.dateTimeCreation = dateTimeCreation;
         this.categoryID = categoryID;
         this.isFavourite = isFavourite;
-        this.dateTimeModify = dateTimeCreation;
-
+        this.dateTimeModify = dateTimeModify;
     }
 
     protected Note(Parcel in) {
@@ -58,10 +52,6 @@ public class Note implements Parcelable, Comparable{//класс для рабо
         dateTimeModify = new GregorianCalendar();
     }
 
-    public static String[] getCategories() {
-        return categories;
-    }
-
     public String getTitle() {
         return title;
     }
@@ -81,11 +71,6 @@ public class Note implements Parcelable, Comparable{//класс для рабо
 
     public void setText(String text) {
         this.text = text;
-        updateTime();
-    }
-
-    public void setDateTimeModify(Calendar dateTimeModify) {
-        this.dateTimeModify = dateTimeModify;
         updateTime();
     }
 
@@ -123,11 +108,6 @@ public class Note implements Parcelable, Comparable{//класс для рабо
     @Override
     public int compareTo(Object o) {
         Note note = (Note)o;
-        if (dateTimeModify.getTime().getTime() > note.dateTimeModify.getTime().getTime())
-            return -1;
-        if (dateTimeModify.getTime().getTime() == note.dateTimeModify.getTime().getTime())
-            return 0;
-        return 1;
-
+        return Long.compare(note.dateTimeModify.getTime().getTime(), dateTimeModify.getTime().getTime());
     }
 }

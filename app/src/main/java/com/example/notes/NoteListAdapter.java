@@ -6,10 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import java.text.SimpleDateFormat;
 import java.util.List;
 
@@ -21,10 +19,6 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.NoteLi
 
     public void setListener(NotesListClickListener listener) {
         this.listener = listener;
-    }
-
-    public List<Note> getList() {
-        return list;
     }
 
     public void setList(List<Note> list) {
@@ -56,7 +50,6 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.NoteLi
         else
             holder.getItemView().<ImageView>findViewById(R.id.favoriteImageItemListNote)
                     .setImageResource(R.drawable.ic_favorite_no);
-
     }
 
     @Override
@@ -66,76 +59,30 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.NoteLi
 
     public class NoteListViewHolder extends RecyclerView.ViewHolder {
 
-        private View itemView;
+        private final View itemView;
 
         public NoteListViewHolder(@NonNull View itemView) {
             super(itemView);
             this.itemView = itemView;
 
-            itemView.findViewById(R.id.linearCardView).setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View view) {
-
-                    Note note = list.get(getAdapterPosition());
-                    listener.onLongClick(note, view, getAdapterPosition());
-
-                    return true;
-                }
+            itemView.findViewById(R.id.linearCardView).setOnLongClickListener(view -> {
+                Note note = list.get(getAdapterPosition());
+                listener.onLongClick(note, view, getAdapterPosition());
+                return true;
             });
-
-            itemView.findViewById(R.id.linearCardView).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Note note = list.get(getAdapterPosition());
-                    listener.onClick(note);
-                }
+            itemView.findViewById(R.id.linearCardView).setOnClickListener(view -> {
+                Note note = list.get(getAdapterPosition());
+                listener.onClick(note);
             });
-
-
-            itemView.findViewById(R.id.textItemListNoteTextView).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Note note = list.get(getAdapterPosition());
-                    listener.onClick(note);
-                }
+            itemView.findViewById((R.id.favoriteLayout)).setOnClickListener(view -> {
+                Note note = list.get(getAdapterPosition());
+                listener.onFavoriteClick(note, itemView, getAdapterPosition());
             });
-
-           itemView.findViewById(R.id.titleItemListNoteTextView).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Note note = list.get(getAdapterPosition());
-                    listener.onClick(note);
-                }
-
-
-            });
-            itemView.findViewById(R.id.dateItemListNoteTextView).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Note note = list.get(getAdapterPosition());
-                    listener.onClick(note);
-                }
-            });
-
-            itemView.findViewById((R.id.favoriteLayout)).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-
-                    Note note = list.get(getAdapterPosition());
-
-                    listener.onFavoriteClick(note, itemView);
-                }
-            });
-
-
-
         }
-
         public View getItemView() {
             return itemView;
         }
     }
-
 
     /**
      * Метод для создания превью текста заметки для списка заметок

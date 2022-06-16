@@ -1,6 +1,5 @@
 package com.example.notes;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -26,12 +25,10 @@ public class AboutFragment extends Fragment implements OnBackPressedListener{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_about, container, false);
-
     }
-    @SuppressLint("ResourceType")
+
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         LinearLayout layout = view.findViewById(R.id.aboutLayout);
         layout.setOnClickListener(view1 -> { //закрываем на нажатие
             if (getResources().getConfiguration().orientation
@@ -40,9 +37,7 @@ public class AboutFragment extends Fragment implements OnBackPressedListener{
                 requireActivity().findViewById(R.id.fragmentNoteContainer).setVisibility(View.VISIBLE);
             requireActivity().getSupportFragmentManager().popBackStack();//закрываем
         });
-
         hideKeyBoard();
-
     }
 
     @Override

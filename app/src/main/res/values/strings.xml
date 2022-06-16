@@ -48,4 +48,9 @@
     <string name="russian">Русский</string>
     <string name="english">English</string>
     <string name="settings_text">Настройки</string>
+    <string name="share_text_button">Поделиться</string>
+    <string name="share_message">Поделиться используя…</string>
+    <string name="message_empty_list">Список пуст…</string>
+    <string name="message_nothing_to_share">Поделиться нечем…</string>
+
 </resources>

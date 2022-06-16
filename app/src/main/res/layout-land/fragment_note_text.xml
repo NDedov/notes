@@ -8,7 +8,7 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="4"
+        android:layout_weight="9"
         android:fillViewport="true">
 
         <LinearLayout
@@ -59,17 +59,20 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:layout_weight="1">
+        android:layout_weight="2">
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/favoriteButton"
             style="@style/ButtonVerticalNoteStyle"
             android:text="@string/favorite_text_button"
-            android:drawableTop="@drawable/ic_favorite_no"
             android:layout_weight="1"
             tools:ignore="NestedWeights" />
+
         <androidx.appcompat.widget.AppCompatButton
             style="@style/ButtonVerticalNoteStyle"
+            android:id="@+id/shareButton"
+            android:text="@string/share_text_button"
             android:layout_weight="1"/>
+
         <androidx.appcompat.widget.AppCompatButton
             style="@style/ButtonVerticalNoteStyle"
             android:id="@+id/deleteButton"
