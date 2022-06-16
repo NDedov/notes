@@ -13,7 +13,7 @@ import android.widget.RadioButton;
 
 public class FilterFragment  extends Fragment implements Constants{
 
-    int currentFilterPosition;
+    private int currentFilterPosition;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

@@ -48,4 +48,8 @@
     <string name="russian">Русский</string>
     <string name="english">English</string>
     <string name="settings_text">Settings</string>
+    <string name="share_text_button">Share</string>
+    <string name="share_message">Share with…</string>
+    <string name="message_empty_list">List is empty…</string>
+    <string name="message_nothing_to_share">Is nothing to share…</string>
 </resources>

@@ -1,25 +1,22 @@
 package com.example.notes;
 
-import android.os.Build;
+import android.content.SharedPreferences;
 import android.os.Parcel;
 import android.os.Parcelable;
-import androidx.annotation.RequiresApi;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.GregorianCalendar;
 
 public class Notes implements Parcelable {
-    private ArrayList<Note> notes;
+    private final ArrayList<Note> notes;
     private Note currentNote;
-    Comparator<Note> comparator;
 
     public Notes() {
         notes = new ArrayList<>();
         currentNote = null;
-        comparator = Note::compareTo;
+
     }
-
-
 
     protected Notes(Parcel in) {
         notes = in.createTypedArrayList(Note.CREATOR);
@@ -41,14 +38,15 @@ public class Notes implements Parcelable {
     public Note getCurrentNote() {
         return currentNote;
     }
+
     public int getSize(){
         return notes.size();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     public void setCurrentNote(Note currentNote) {
+
         this.currentNote = currentNote;
-        notes.sort(comparator);
+        Collections.sort(notes, Note::compareTo);
     }
 
     public ArrayList<Note> getNotes() {
@@ -61,23 +59,16 @@ public class Notes implements Parcelable {
 
     public void delete(Note note){
         notes.remove(note);
-        if (currentNote.equals(note))
-            if (notes.size()>0)
-                this.currentNote = notes.get(0);
+        if (currentNote != null && notes.size() > 0)
+            if (currentNote.equals(note))
+                    this.currentNote = notes.get(0);
     }
 
-    public int size(){
-        return notes.size();
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.N)
     public void add(Note note){
         notes.add(0, note);
         currentNote = note;
-        //notes.sort(comparator);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     public void testFillNotes() {
         notes.add(new Note("Первая заметка", "Добрый день, \tкак дела?\nПривет",
                 new GregorianCalendar(), 0, false));
@@ -109,7 +100,6 @@ public class Notes implements Parcelable {
                 new GregorianCalendar(), 2, true));
         notes.add(new Note("Третья заметка", "Добрый день опять, как дела?\n Привет",
                 new GregorianCalendar(), 0, false));
-        notes.sort(comparator);
     }
 
     @Override

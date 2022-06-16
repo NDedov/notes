@@ -3,6 +3,7 @@ package com.example.notes;
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.text.Editable;
@@ -16,7 +17,6 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.DatePicker;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,32 +27,27 @@ import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Locale;
 
 public class NoteTextFragment extends Fragment implements Constants, DeleteDialogListener,OnBackPressedListener {
 
-    Note note;//заметка
-    TextView dateTimeView; // поле для даты/времени
-    AppCompatButton favoriteButton; // кнопка Избранное
-    AppCompatButton deleteButton; // кнопка Удалить
-    AppCompatButton saveButton; // кнопка сохранить
-
-    TextView titleView; // заголовок
-    Spinner categorySpinner; // список категорий
-    TextView textView; // текст заметки
-
-    TextViewUndoRedo helperTextView;
-
-    boolean flagForSpinner = false;// флаг для вызова обработчика только по нажатию,
+    private Note note;//заметка
+    private TextView dateTimeView; // поле для даты/времени
+    private AppCompatButton favoriteButton; // кнопка Избранное
+    private AppCompatButton deleteButton; // кнопка Удалить
+    private AppCompatButton saveButton; // кнопка сохранить
+    private AppCompatButton shareButton; // кнопка сохранить
+    private TextView titleView; // заголовок
+    private Spinner categorySpinner; // список категорий
+    private TextView textView; // текст заметки
+    private TextViewUndoRedo helperTextView; //вспомогательный объект для обработки undo/redo
+    private boolean flagForSpinner = false;// флаг для вызова обработчика только по нажатию,
     // что бы не срабатывал при инициализации
-
-    boolean noteIsChanged = false;
-
+    private boolean noteIsChanged = false; //флаг фиксирующий, что заметка изменилась
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -66,14 +61,11 @@ public class NoteTextFragment extends Fragment implements Constants, DeleteDialo
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_note_text, container, false);
-
     }
 
-    @SuppressLint("SimpleDateFormat")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
 
         List<Fragment> fList = requireActivity().getSupportFragmentManager().getFragments();
         for (Fragment item: fList) {//находим ненужные фрагменты и удаляем, возникают при повороте
@@ -86,26 +78,12 @@ public class NoteTextFragment extends Fragment implements Constants, DeleteDialo
         if (arguments != null){// получаем из бандл текущую заметку
             note = arguments.getParcelable(LIST_TO_NOTE_INDEX);
             noteIsChanged = arguments.getBoolean(NOTE_IS_CHANGED_TAG);
-
             if (note != null)
                 initViews(view);
         }
 
-        // настраиваем FragmentResultListener при успешной смене даты в DateTimeFragment, обновляем
-        // дату в текущем фрагменте
-        getParentFragmentManager().setFragmentResultListener(RESULT_OK_DATE_EXIT_INDEX, this,
-                (key, bundle) -> {
-                    note = bundle.getParcelable(DATE_EXIT_INDEX);
-                    dateTimeView.setText(new SimpleDateFormat("dd MMMM yyyy  HH:mm")//обновляем
-                            // выводимое значение даты в заметке
-                            .format(note.getDateTimeModify().getTime()));
-                    updateNoteList();// обновляем основной список заметок
-                });
-
         if (!isLandscape())
             setActionBar(view);
-
-
     }
 
     @Override
@@ -113,7 +91,6 @@ public class NoteTextFragment extends Fragment implements Constants, DeleteDialo
         if (noteIsChanged)
             updateNoteList();
         super.onSaveInstanceState(outState);
-
     }
 
     private void updateNoteList() {//метод для обновления основного списка заметок (NoteListFragment)
@@ -136,15 +113,14 @@ public class NoteTextFragment extends Fragment implements Constants, DeleteDialo
         favoriteButton = view.findViewById(R.id.favoriteButton);
         deleteButton = view.findViewById(R.id.deleteButton);
         saveButton = view.findViewById(R.id.saveButton);
+        shareButton = view.findViewById(R.id.shareButton);
         printValues();
-
         initButtons();
         initListeners();
-        InitEditListeners(view);
+        InitEditListeners();
     }
 
-
-    private void InitEditListeners(View view) {// обработчик изменений едитов и спиннера
+    private void InitEditListeners() {// обработчик изменений едитов и спиннера
 
         textView.addTextChangedListener(new TextWatcher() {
             @Override
@@ -153,9 +129,7 @@ public class NoteTextFragment extends Fragment implements Constants, DeleteDialo
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                noteIsChanged = true;
-                setIconMenu();
-                setSaveButton();
+                noteIsChangedActions();
             }
 
             @Override
@@ -165,37 +139,34 @@ public class NoteTextFragment extends Fragment implements Constants, DeleteDialo
 
         titleView.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2){}
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                noteIsChanged = true;
-                setIconMenu();
-                setSaveButton();
+                noteIsChangedActions();
             }
 
             @Override
-            public void afterTextChanged(Editable editable) {
-            }
+            public void afterTextChanged(Editable editable){}
         });
 
         categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (flagForSpinner) {
-                    noteIsChanged = true;
-                    setIconMenu();
-                    setSaveButton();
-                }
+                if (flagForSpinner)
+                    noteIsChangedActions();
                 flagForSpinner = true;
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
+            public void onNothingSelected(AdapterView<?> adapterView){}
         });
+    }
+
+    public void noteIsChangedActions(){
+        noteIsChanged = true;
+        setIconMenu();
+        setSaveButton();
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
@@ -210,15 +181,15 @@ public class NoteTextFragment extends Fragment implements Constants, DeleteDialo
         toast.show();
     }
 
-    private void initListeners() {//обработчики кнопок в нижнем "меню"
-        dateTimeView.setOnClickListener(view -> {
-            hideKeyBoard();
-       //     showDateTimeFragment(note);
-            showDateTimeDialog(note);
+    private void initListeners() {//обработчики кнопок
+        initDateTimeViewListener();
+        initDeleteButtonListener();
+        initShareButtonListener();
+        initSaveButtonListener();
+        initFavoriteButtonListener();
+    }
 
-
-        });
-
+    private void initDeleteButtonListener() {
         deleteButton.setOnClickListener(view -> {//обработка кнопки удалить
             hideKeyBoard();
             DeleteNoteDialogFragment deleteNoteDialogFragment = new DeleteNoteDialogFragment();
@@ -226,7 +197,25 @@ public class NoteTextFragment extends Fragment implements Constants, DeleteDialo
             deleteNoteDialogFragment.show(requireActivity().getSupportFragmentManager(),
                     DELETE_NOTE_DIALOG_TAG);
         });
+    }
 
+    private void initShareButtonListener() {
+        shareButton.setOnClickListener(view -> {//обработка кнопки поделиться
+            String shareBody = textView.getText().toString();
+            String shareSub = titleView.getText().toString();
+            if (shareBody.equals("") && shareSub.equals(""))
+                displayToast(getString(R.string.message_nothing_to_share));
+            else {
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("text/plain");
+                intent.putExtra(Intent.EXTRA_SUBJECT,shareSub);
+                intent.putExtra(Intent.EXTRA_TEXT,shareSub + "\n" + shareBody);
+                startActivity(Intent.createChooser(intent,getString(R.string.share_message)));
+            }
+        });
+    }
+
+    private void initSaveButtonListener() {
         saveButton.setOnClickListener(view -> {//обработка кнопки сохранить
             hideKeyBoard();
             if (noteIsChanged){
@@ -236,8 +225,6 @@ public class NoteTextFragment extends Fragment implements Constants, DeleteDialo
                     helperTextView = new TextViewUndoRedo(textView);
                     noteIsChanged = false;
                     setSaveButton();
-
-                    //setIconMenu();
                 }
                 else {
                     displayToast(getString(R.string.save_ok));
@@ -246,11 +233,12 @@ public class NoteTextFragment extends Fragment implements Constants, DeleteDialo
                     setIconMenu();
                     setSaveButton();
                     requireActivity().getSupportFragmentManager().popBackStack();
-
                 }
             }
         });
+    }
 
+    private void initFavoriteButtonListener() {
         favoriteButton.setOnClickListener(view -> {//обработка кнопки Избранное
             note.setFavourite(!note.isFavourite());
             showFavoriteButton();
@@ -260,21 +248,23 @@ public class NoteTextFragment extends Fragment implements Constants, DeleteDialo
         });
     }
 
+    private void initDateTimeViewListener() { //обработка едита с датой временем
+        dateTimeView.setOnClickListener(view -> {
+            hideKeyBoard();
+            showDateTimeDialog(note);
+        });
+    }
+
     private void showDateTimeDialog(Note note) {//диалог по смене "даты". Меняет только визуально
 
-        new DatePickerDialog(requireContext(), 0, new DatePickerDialog.OnDateSetListener() {
-            @SuppressLint("SimpleDateFormat")
-            @Override
-            public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+        new DatePickerDialog(requireContext(), 0, (datePicker, i, i1, i2) -> {
+            Calendar tmpCalendar = new GregorianCalendar();
+            tmpCalendar.set(Calendar.YEAR, datePicker.getYear());
+            tmpCalendar.set(Calendar.MONTH, datePicker.getMonth());
+            tmpCalendar.set(Calendar.DAY_OF_MONTH, datePicker.getDayOfMonth());
+            dateTimeView.setText(new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
+                    .format(tmpCalendar.getTime()));
 
-                Calendar tmpCalendar = new GregorianCalendar();
-                tmpCalendar.set(Calendar.YEAR, datePicker.getYear());
-                tmpCalendar.set(Calendar.MONTH, datePicker.getMonth());
-                tmpCalendar.set(Calendar.DAY_OF_MONTH, datePicker.getDayOfMonth());
-                dateTimeView.setText(new SimpleDateFormat("dd MMMM yyyy")
-                        .format(tmpCalendar.getTime()));
-
-            }
         }, note.getDateTimeModify().get(Calendar.YEAR),
                 note.getDateTimeModify().get(Calendar.MONTH),
                 note.getDateTimeModify().get(Calendar.DAY_OF_MONTH)).show();
@@ -344,12 +334,10 @@ public class NoteTextFragment extends Fragment implements Constants, DeleteDialo
         }
     }
 
-
-    @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {//обработчик меню
         switch (item.getItemId()){
-            case R.id.action_text_save:
+            case (R.id.action_text_save):
                 if (noteIsChanged){ //отрабатываем сохранение если заметка изменилась
                     helperTextView = new TextViewUndoRedo(textView);
                     updateNoteList();
@@ -359,11 +347,11 @@ public class NoteTextFragment extends Fragment implements Constants, DeleteDialo
                     setSaveButton();
                 }
                 return true;
-            case R.id.action_text_redo:
+            case (R.id.action_text_redo):
                 helperTextView.redo();
                 setIconMenu();
                 return true;
-            case R.id.action_text_undo:
+            case (R.id.action_text_undo):
                 helperTextView.undo();
                 setIconMenu();
                 return true;
@@ -371,27 +359,22 @@ public class NoteTextFragment extends Fragment implements Constants, DeleteDialo
         return super.onOptionsItemSelected(item);
     }
 
-
-    @SuppressLint("SimpleDateFormat")
     private void printValues() {
         titleView.setText(note.getTitle());
         textView.setText(note.getText());
-        dateTimeView.setText(new SimpleDateFormat("dd MMMM yyyy  HH:mm")
+        dateTimeView.setText(new SimpleDateFormat("dd MMMM yyyy  HH:mm", Locale.getDefault())
                 .format(note.getDateTimeModify().getTime()));
-
-        @SuppressLint("ResourceType")
         ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(getContext(),
                 android.R.layout.simple_spinner_item, Note.categories);
         categorySpinner.setAdapter(categoryAdapter);
         categorySpinner.setSelection(note.getCategoryID());
-
         helperTextView = new TextViewUndoRedo(textView);
     }
-
 
     private void initButtons() {
         showFavoriteButton();
         deleteButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_trash, 0, 0);
+        shareButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_share, 0, 0);
         setSaveButton();
     }
 
@@ -404,60 +387,18 @@ public class NoteTextFragment extends Fragment implements Constants, DeleteDialo
             saveButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_save3_grey, 0, 0);
             saveButton.setEnabled(false);
         }
-
     }
-
 
     private void showFavoriteButton() {
         if (note.isFavourite())
             favoriteButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_favorite_yes, 0, 0);
         else
             favoriteButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_favorite_no, 0, 0);
-
     }
 
     private boolean isLandscape() {
         return getResources().getConfiguration().orientation
                 == Configuration.ORIENTATION_LANDSCAPE;
-    }
-
-    private void showDateTimeFragment(Note note) {
-        if (isLandscape())
-            showLandDateTime(note);
-        else
-            showPortDateTime(note);
-    }
-
-    private void showLandDateTime(Note note) {
-        DateTimeFragment dateTimeFragment =
-                DateTimeFragment.newInstance(note);
-        FragmentManager fragmentManager =
-                requireActivity().getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction =
-                fragmentManager.beginTransaction();
-// добавляем фрагмент
-        fragmentTransaction
-                .replace(R.id.fragmentNoteContainer, dateTimeFragment)
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                .addToBackStack("")
-                .commit();
-    }
-
-    private void showPortDateTime(Note note) {
-        DateTimeFragment dateTimeFragment =
-                DateTimeFragment.newInstance(note);
-        FragmentManager fragmentManager =
-                requireActivity().getSupportFragmentManager();
-
-        FragmentTransaction fragmentTransaction =
-                fragmentManager.beginTransaction();
-// добавляем фрагмент
-        fragmentTransaction
-                .replace(R.id.fragmentContainer, dateTimeFragment)
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                .addToBackStack("")
-                .commit();
-
     }
 
     public static NoteTextFragment newInstance(Note note) {
@@ -470,27 +411,18 @@ public class NoteTextFragment extends Fragment implements Constants, DeleteDialo
 
     @Override
     public void onDelete() {//обработчик кнопки удалить
-        if (isLandscape()){
-            Bundle result = new Bundle();
-            result.putParcelable(NOTE_CHANGE_INDEX, note);
-            getParentFragmentManager().setFragmentResult(NOTE_DELETE, result);
+        Bundle result = new Bundle();
+        result.putParcelable(NOTE_CHANGE_INDEX, note);
+        getParentFragmentManager().setFragmentResult(NOTE_DELETE, result);
+        if (isLandscape())
             requireActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
-            displayToast(getString(R.string.toast_note_delete));
-
-        }
-        else {
-            Bundle result = new Bundle();
-            result.putParcelable(NOTE_CHANGE_INDEX, note);
-            getParentFragmentManager().setFragmentResult(NOTE_DELETE, result);
+        else
             requireActivity().getSupportFragmentManager().popBackStack();
-            displayToast(getString(R.string.toast_note_delete));
-        }
+        displayToast(getString(R.string.toast_note_delete));
     }
 
     @Override
-    public void onNo() {
-
-    }
+    public void onNo() {}
 
     @Override
     public void onBackPressed() {

@@ -10,7 +10,7 @@
         android:id="@+id/textView2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/black"
+        android:textColor="?attr/colorOnSecondary"
         android:textSize="@dimen/note_title_text_size"
         android:layout_marginStart="@dimen/note_big_margin"
         android:text="@string/text_start_screen" />
@@ -19,7 +19,7 @@
         android:id="@+id/textView4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/black"
+        android:textColor="?attr/colorOnSecondary"
         android:textSize="@dimen/search_text_size"
         android:layout_marginStart="@dimen/note_big_margin"
         android:text="@string/all_rights_reserved_2022_c" />

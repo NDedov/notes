@@ -3,8 +3,6 @@ package com.example.notes;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import androidx.appcompat.app.AppCompatDelegate;
-
 public class Settings implements Parcelable {
     public static String ENGLISH = "ENGLISH";
     public static String RUSSIAN = "RUSSIAN";

@@ -3,8 +3,6 @@ package com.example.notes;
 import android.app.Activity;
 import android.app.Dialog;
 import android.os.Bundle;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -28,6 +26,4 @@ public class DeleteNoteDialogFragment extends DialogFragment implements Constant
                 .setNegativeButton(R.string.no_delete, (dialogInterface, i) -> listener.onNo())
                 .create();
     }
-
-
 }

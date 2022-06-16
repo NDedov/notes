@@ -1,7 +1,7 @@
 package com.example.notes;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -22,12 +22,12 @@ import java.util.Locale;
 
 public class SettingsFragment extends Fragment implements OnBackPressedListener,Constants {
 
-    Settings settings;
+    private Settings settings;
 
-    Button buttonSettingsSave;
-    SwitchMaterial switchMaterial;
-    RadioButton radioButtonRus;
-    RadioButton radioButtonEng;
+    private Button buttonSettingsSave;
+    private SwitchMaterial switchMaterial;
+    private RadioButton radioButtonRus;
+    private RadioButton radioButtonEng;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -40,25 +40,27 @@ public class SettingsFragment extends Fragment implements OnBackPressedListener,
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_settings, container, false);
-
     }
-    @SuppressLint("ResourceType")
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         Bundle arguments = getArguments();
+
         if (arguments != null){
             settings = arguments.getParcelable(SETTINGS_TAG);
+            if (settings!=null){
+                initViews(view);
+                initSwitch();
+                initButton();
+                hideKeyBoard();
+            }
+        }
+    }
 
+    private void initViews(View view) {
         buttonSettingsSave = view.findViewById(R.id.buttonSettingsSave);
         switchMaterial = view.findViewById(R.id.switchTheme);
         radioButtonRus = view.findViewById(R.id.radioButtonRus);
         radioButtonEng = view.findViewById(R.id.radioButtonEng);
-
-        initSwitch();
-        initButton();
-        hideKeyBoard();
-        }
     }
 
     private void initButton() {
@@ -72,6 +74,7 @@ public class SettingsFragment extends Fragment implements OnBackPressedListener,
 
             result.putParcelable(SETTINGS_TAG, settings);
             getParentFragmentManager().setFragmentResult(SETTINGS_CHANGED_TAG, result);
+            recoverContainer();
             requireActivity().getSupportFragmentManager().popBackStack();
         });
     }
@@ -86,42 +89,39 @@ public class SettingsFragment extends Fragment implements OnBackPressedListener,
             radioButtonRus.setChecked(false);
             radioButtonEng.setChecked(true);
         }
+        initSwitchListener();
+    }
 
-        switchMaterial.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (switchMaterial.isChecked())
-                    settings.setNightMode(Settings.NIGHT_MODE_YES);
-                else
-                    settings.setNightMode(Settings.NIGHT_MODE_NO);
-                Bundle result = new Bundle();
-                result.putParcelable(SETTINGS_TAG, settings);
-                getParentFragmentManager().setFragmentResult(SETTINGS_CHANGED_TAG, result);
-                requireActivity().getSupportFragmentManager().popBackStack();
+    private void initSwitchListener() {
+        switchMaterial.setOnClickListener(view -> {
+            if (switchMaterial.isChecked())
+                settings.setNightMode(Settings.NIGHT_MODE_YES);
+            else
+                settings.setNightMode(Settings.NIGHT_MODE_NO);
+            Bundle result = new Bundle();
+            result.putParcelable(SETTINGS_TAG, settings);
+            getParentFragmentManager().setFragmentResult(SETTINGS_CHANGED_TAG, result);
+            recoverContainer();
+            requireActivity().getSupportFragmentManager().popBackStack();
 
-                if (settings.getNightMode().equals(Settings.NIGHT_MODE_YES))
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-                else
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-            }
+            if (settings.getNightMode().equals(Settings.NIGHT_MODE_YES))
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            else
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         });
 
     }
 
     private void applyLanguage() {
         Resources res = getResources();
-        // Change locale settings in the app.
         DisplayMetrics dm = res.getDisplayMetrics();
         android.content.res.Configuration conf = res.getConfiguration();
         if (settings.getLanguage().equals(Settings.ENGLISH))
             conf.setLocale(new Locale("en")); // API 17+ only.
-        // Use conf.locale = new Locale(...) if targeting lower versions
         if (settings.getLanguage().equals(Settings.RUSSIAN))
             conf.setLocale(new Locale("ru")); // API 17+ only.
         res.updateConfiguration(conf, dm);
-
         ((IDrawerFromFragment)requireActivity()).updateDrawer();
-
     }
 
     public static SettingsFragment newInstance(Settings settings){
@@ -134,6 +134,7 @@ public class SettingsFragment extends Fragment implements OnBackPressedListener,
 
     @Override
     public void onBackPressed() {
+        recoverContainer();
         requireActivity().getSupportFragmentManager().popBackStack();
     }
 
@@ -144,4 +145,13 @@ public class SettingsFragment extends Fragment implements OnBackPressedListener,
             imm.hideSoftInputFromWindow(view1.getWindowToken(), 0);
         }
     }
+
+    void recoverContainer(){
+        if (getResources().getConfiguration().orientation
+                == Configuration.ORIENTATION_LANDSCAPE)//восстанавливаем фрагмент для заметок
+            // для ландшафтной ориентации
+            requireActivity().findViewById(R.id.fragmentNoteContainer).setVisibility(View.VISIBLE);
+        requireActivity().getSupportFragmentManager().popBackStack();
+    }
+
 }

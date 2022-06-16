@@ -57,17 +57,35 @@
                 app:layout_constraintEnd_toStartOf="@id/filterFavoriteButton"
                 app:layout_constraintTop_toTopOf="parent" />
 
+
+
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/filterFavoriteButton"
                 style="@style/ButtonHorizontalNoteStyle"
                 android:paddingTop="@dimen/padding_top_favorite_button"
                 android:layout_width="@dimen/filter_button_size"
                 android:layout_height="@dimen/filter_button_size"
-                android:layout_marginEnd="@dimen/note_little_margin"
+
                 app:layout_constraintBottom_toTopOf="@+id/filterChildLayout"
                 app:layout_constraintStart_toEndOf="@id/filterButton"
+                app:layout_constraintEnd_toStartOf="@+id/filterClearButton"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/filterClearButton"
+                style="?android:attr/borderlessButtonStyle"
+                android:backgroundTintMode="screen"
+                android:paddingTop="@dimen/padding_top_favorite_button"
+                android:layout_marginEnd="@dimen/note_little_margin"
+
+                android:layout_width="36dp"
+                android:layout_height="@dimen/filter_button_size"
+                android:drawableTop="@drawable/ic_cancel_grey"
+                app:layout_constraintBottom_toTopOf="@+id/filterChildLayout"
+                app:layout_constraintStart_toEndOf="@id/filterFavoriteButton"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
             <FrameLayout
                 android:id="@+id/filterChildLayout"
                 app:layout_constraintStart_toStartOf="parent"
@@ -81,6 +99,13 @@
 
     </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
+
+    <FrameLayout
+        android:id="@+id/messageLayout"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </FrameLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
