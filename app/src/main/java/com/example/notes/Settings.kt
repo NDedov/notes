@@ -1,62 +1,50 @@
-package com.example.notes;
+package com.example.notes
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import android.os.Parcelable
+import android.os.Parcel
+import android.os.Parcelable.Creator
 
-public class Settings implements Parcelable {
-    public static String ENGLISH = "ENGLISH";
-    public static String RUSSIAN = "RUSSIAN";
-    public static String NIGHT_MODE_YES = "MODE_NIGHT_YES";
-    public static String NIGHT_MODE_NO = "MODE_NIGHT_NO";
-    private String language;
-    private String nightMode;
+class Settings : Parcelable {
+    var language: String?
+    var nightMode: String?
 
-    protected Settings(Parcel in) {
-        language = in.readString();
-        nightMode = in.readString();
+    protected constructor(`in`: Parcel) {
+        language = `in`.readString()
+        nightMode = `in`.readString()
     }
 
-    public Settings(String language, String nightMode) {
-        this.language = language;
-        this.nightMode = nightMode;
+    constructor(language: String?, nightMode: String?) {
+        this.language = language
+        this.nightMode = nightMode
     }
 
-    public static final Creator<Settings> CREATOR = new Creator<Settings>() {
-        @Override
-        public Settings createFromParcel(Parcel in) {
-            return new Settings(in);
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    override fun writeToParcel(parcel: Parcel, i: Int) {
+        parcel.writeString(language)
+        parcel.writeString(nightMode)
+    }
+
+    companion object {
+        @JvmField
+        var ENGLISH = "ENGLISH"
+        @JvmField
+        var RUSSIAN = "RUSSIAN"
+        @JvmField
+        var NIGHT_MODE_YES = "MODE_NIGHT_YES"
+        @JvmField
+        var NIGHT_MODE_NO = "MODE_NIGHT_NO"
+        @JvmField
+        val CREATOR: Creator<Settings?> = object : Creator<Settings?> {
+            override fun createFromParcel(`in`: Parcel): Settings? {
+                return Settings(`in`)
+            }
+
+            override fun newArray(size: Int): Array<Settings?> {
+                return arrayOfNulls(size)
+            }
         }
-
-        @Override
-        public Settings[] newArray(int size) {
-            return new Settings[size];
-        }
-    };
-
-    public String getLanguage() {
-        return language;
-    }
-
-    public void setLanguage(String language) {
-        this.language = language;
-    }
-
-    public void setNightMode(String nightMode) {
-        this.nightMode = nightMode;
-    }
-
-    public String getNightMode() {
-        return nightMode;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(language);
-        parcel.writeString(nightMode);
     }
 }

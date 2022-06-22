@@ -1,77 +1,62 @@
-package com.example.notes;
+package com.example.notes
 
-import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.RadioButton;
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.LinearLayout
+import android.widget.RadioButton
+import androidx.fragment.app.Fragment
 
-
-public class FilterFragment  extends Fragment implements Constants{
-
-    private int currentFilterPosition;
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (savedInstanceState != null)
-            requireActivity().getSupportFragmentManager().popBackStack();//удаляем лишние
+class FilterFragment : Fragment(), Constants {
+    private var currentFilterPosition = 0
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if (savedInstanceState != null) requireActivity().supportFragmentManager.popBackStack() //удаляем лишние
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_filter, container, false);
+        return inflater.inflate(R.layout.fragment_filter, container, false)
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        Bundle arguments = getArguments();
-        if (arguments != null){
-            currentFilterPosition = arguments.getInt(FILTER_INDEX);
-            initViews(view);
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val arguments = arguments
+        if (arguments != null) {
+            currentFilterPosition = arguments.getInt(Constants.FILTER_INDEX)
+            initViews(view)
         }
     }
 
-    private void initViews(View view) {
-        LinearLayout layout = view.findViewById(R.id.categoryLayout);
-
-        for (int i = 0; i < Note.categories.length + 1; i++) {//заполняем радиобаттонами категорий
-            RadioButton rb = new RadioButton(getContext());
-
-            if (i == Note.categories.length)
-                rb.setText("Показать все");//для последнего радиобаттона
-            else
-                rb.setText(Note.categories[i]);
-
-            if (i == currentFilterPosition)
-                rb.setChecked(true);
-
-            layout.addView(rb);//добавляем радиобаттоны
+    private fun initViews(view: View) {
+        val layout = view.findViewById<LinearLayout>(R.id.categoryLayout)
+        for (i in 0 until Note.categories.size + 1) { //заполняем радиобаттонами категорий
+            val rb = RadioButton(context)
+            if (i == Note.categories.size) rb.text = "Показать все" //для последнего радиобаттона
+            else rb.text = Note.categories[i]
+            if (i == currentFilterPosition) rb.isChecked = true
+            layout.addView(rb) //добавляем радиобаттоны
 
             //прописываем Листенеры для вью
-            final int positionCategory = i;
-            rb.setOnClickListener(v -> {
-                Bundle result = new Bundle();
-                result.putInt(FILTER_INDEX, positionCategory);
-                getParentFragmentManager().setFragmentResult(RESULT_OK_FILTER_EXIT_INDEX, result);
-                getParentFragmentManager().popBackStack();
-            });
+            rb.setOnClickListener {
+                val result = Bundle()
+                result.putInt(Constants.FILTER_INDEX, i)
+                parentFragmentManager.setFragmentResult(Constants.RESULT_OK_FILTER_EXIT_INDEX, result)
+                parentFragmentManager.popBackStack()
+            }
         }
     }
 
-    public static FilterFragment newInstance(int currentFilterPosition){
-        FilterFragment filterFragment = new FilterFragment();
-        Bundle args = new Bundle();
-        args.putInt(FILTER_INDEX, currentFilterPosition);
-        filterFragment.setArguments(args);
-        return filterFragment;
+    companion object {
+        @JvmStatic
+        fun newInstance(currentFilterPosition: Int): FilterFragment {
+            val filterFragment = FilterFragment()
+            val args = Bundle()
+            args.putInt(Constants.FILTER_INDEX, currentFilterPosition)
+            filterFragment.arguments = args
+            return filterFragment
+        }
     }
 }

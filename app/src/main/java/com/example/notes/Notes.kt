@@ -1,115 +1,134 @@
-package com.example.notes;
+package com.example.notes
 
-import android.content.SharedPreferences;
-import android.os.Parcel;
-import android.os.Parcelable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.GregorianCalendar;
+import android.os.Parcelable
+import android.os.Parcel
+import android.os.Parcelable.Creator
+import java.util.*
 
-public class Notes implements Parcelable {
-    private final ArrayList<Note> notes;
-    private Note currentNote;
+class Notes :Parcelable{
+    var notes: ArrayList<Note> = ArrayList()
+    private var currentNote: Note? = null
 
-    public Notes() {
-        notes = new ArrayList<>();
-        currentNote = null;
-
+    constructor(){
+        currentNote = null
     }
 
-    protected Notes(Parcel in) {
-        notes = in.createTypedArrayList(Note.CREATOR);
-        currentNote = in.readParcelable(Note.class.getClassLoader());
+    fun getCurrentNote(): Note? {
+        return currentNote
     }
 
-    public static final Creator<Notes> CREATOR = new Creator<Notes>() {
-        @Override
-        public Notes createFromParcel(Parcel in) {
-            return new Notes(in);
+    val size: Int
+        get() = notes.size
+
+    constructor(parcel: Parcel) : this() {
+        currentNote = parcel.readParcelable(Note::class.java.classLoader)
+    }
+
+    fun setCurrentNote(currentNote: Note?) {
+        this.currentNote = currentNote
+        notes.sortWith { obj: Note, o: Note? -> obj.compareTo(o) }
+    }
+
+    operator fun get(position: Int): Note {
+        return notes[position]
+    }
+
+    fun delete(note: Note) {
+        notes.remove(note)
+        if (currentNote != null && notes.size > 0) if (currentNote == note) currentNote = notes[0]
+    }
+
+    fun add(note: Note) {
+        notes.add(0, note)
+        currentNote = note
+    }
+
+    fun testFillNotes() {
+        notes.add(Note("Первая заметка", "Добрый день, \tкак дела?\nПривет",
+                GregorianCalendar(), 0, false))
+        notes.add(Note("Покупки", """
+     Молоко, хлеб
+     Масло
+     Молоко
+     Масло
+     Молоко"Молоко, хлеб
+     Масло
+     Молоко
+     Масло
+     Молоко"Молоко, хлеб
+     Масло
+     Молоко
+     Масло
+     Молоко"Молоко, хлеб
+     Масло
+     Молоко
+     Масло
+     Молоко"Молоко, хлеб
+     Масло
+     Молоко
+     Масло
+     МолокоМолоко, хлеб
+     Масло
+     Молоко
+     Масло
+     Молоко"Молоко, хлеб
+     Масло
+     Молоко
+     Масло
+     Молоко"Молоко, хлеб
+     Масло
+     Молоко
+     Масло
+     Молоко"Молоко, хлеб
+     Масло
+     Молоко
+     Масло
+     Молоко"Молоко, хлеб
+     Масло
+     Молоко
+     Масло
+     Молоко
+     """.trimIndent(),
+                GregorianCalendar(), 2, true))
+        notes.add(Note("Третья заметка", "Добрый день опять, как дела?\nПривет",
+                GregorianCalendar(), 1, false))
+        notes.add(Note("Новая заметка", "Добрый день, как дела?\n Привет",
+                GregorianCalendar(), 0, false))
+        notes.add(Note("Что надо сделать срочно", "Молоко, хлеб\n Масло",
+                GregorianCalendar(), 2, true))
+        notes.add(Note("Пароли", "Добрый день опять, как дела?\n Привет",
+                GregorianCalendar(), 4, false))
+        notes.add(Note("Прочее", "Добрый день, как дела?\n Привет",
+                GregorianCalendar(), 0, false))
+        notes.add(Note("Покупки", "Молоко, хлеб\n Масло",
+                GregorianCalendar(), 2, true))
+        notes.add(Note("Третья заметка", "Добрый день опять, как дела?\n Привет",
+                GregorianCalendar(), 0, false))
+        notes.add(Note("Первая заметка", "Добрый день, как дела?\n Привет",
+                GregorianCalendar(), 0, false))
+        notes.add(Note("Покупки", "Молоко, хлеб\n Масло",
+                GregorianCalendar(), 2, true))
+        notes.add(Note("Третья заметка", "Добрый день опять, как дела?\n Привет",
+                GregorianCalendar(), 0, false))
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeParcelable(currentNote, flags)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Creator<Notes> {
+        override fun createFromParcel(parcel: Parcel): Notes {
+            return Notes(parcel)
         }
 
-        @Override
-        public Notes[] newArray(int size) {
-            return new Notes[size];
+        override fun newArray(size: Int): Array<Notes?> {
+            return arrayOfNulls(size)
         }
-    };
-
-    public Note getCurrentNote() {
-        return currentNote;
     }
 
-    public int getSize(){
-        return notes.size();
-    }
 
-    public void setCurrentNote(Note currentNote) {
-
-        this.currentNote = currentNote;
-        Collections.sort(notes, Note::compareTo);
-    }
-
-    public ArrayList<Note> getNotes() {
-        return notes;
-    }
-
-    public Note get(int position){
-        return notes.get(position);
-    }
-
-    public void delete(Note note){
-        notes.remove(note);
-        if (currentNote != null && notes.size() > 0)
-            if (currentNote.equals(note))
-                    this.currentNote = notes.get(0);
-    }
-
-    public void add(Note note){
-        notes.add(0, note);
-        currentNote = note;
-    }
-
-    public void testFillNotes() {
-        notes.add(new Note("Первая заметка", "Добрый день, \tкак дела?\nПривет",
-                new GregorianCalendar(), 0, false));
-        notes.add(new Note("Покупки", "Молоко, хлеб\nМасло\nМолоко\nМасло\nМолоко\"Молоко," +
-                " хлеб\nМасло\nМолоко\nМасло\nМолоко\"" +
-                "Молоко, хлеб\nМасло\nМолоко\nМасло\nМолоко\"Молоко, хлеб\nМасло\nМолоко\nМасло\n" +
-                "Молоко\"Молоко, хлеб\nМасло\nМолоко\nМасло\nМолокоМолоко, хлеб\nМасло\nМолоко\nМасло" +
-                "\nМолоко\"Молоко, хлеб\nМасло\nМолоко\nМасло\nМолоко\"Молоко, хлеб\nМасло\nМолоко\nМасло" +
-                "\nМолоко\"Молоко, хлеб\nМасло\nМолоко\nМасло\nМолоко\"Молоко, хлеб\nМасло\nМолоко\n" +
-                "Масло\nМолоко",
-                new GregorianCalendar(), 2, true));
-        notes.add(new Note("Третья заметка", "Добрый день опять, как дела?\nПривет",
-                new GregorianCalendar(), 1, false));
-        notes.add(new Note("Новая заметка", "Добрый день, как дела?\n Привет",
-                new GregorianCalendar(), 0, false));
-        notes.add(new Note("Что надо сделать срочно", "Молоко, хлеб\n Масло",
-                new GregorianCalendar(), 2, true));
-        notes.add(new Note("Пароли", "Добрый день опять, как дела?\n Привет",
-                new GregorianCalendar(), 4, false));
-        notes.add(new Note("Прочее", "Добрый день, как дела?\n Привет",
-                new GregorianCalendar(), 0, false));
-        notes.add(new Note("Покупки", "Молоко, хлеб\n Масло",
-                new GregorianCalendar(), 2, true));
-        notes.add(new Note("Третья заметка", "Добрый день опять, как дела?\n Привет",
-                new GregorianCalendar(), 0, false));
-        notes.add(new Note("Первая заметка", "Добрый день, как дела?\n Привет",
-                new GregorianCalendar(), 0, false));
-        notes.add(new Note("Покупки", "Молоко, хлеб\n Масло",
-                new GregorianCalendar(), 2, true));
-        notes.add(new Note("Третья заметка", "Добрый день опять, как дела?\n Привет",
-                new GregorianCalendar(), 0, false));
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeTypedList(notes);
-        parcel.writeParcelable(currentNote, i);
-    }
 }

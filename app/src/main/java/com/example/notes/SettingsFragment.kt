@@ -1,157 +1,135 @@
-package com.example.notes;
+package com.example.notes
 
-import android.content.Context;
-import android.content.res.Configuration;
-import android.content.res.Resources;
-import android.os.Bundle;
-import android.util.DisplayMetrics;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
-import android.widget.RadioButton;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatDelegate;
-import androidx.fragment.app.Fragment;
+import android.content.Context
+import android.content.res.Configuration
 
-import com.google.android.material.switchmaterial.SwitchMaterial;
+import com.google.android.material.switchmaterial.SwitchMaterial
+import android.widget.RadioButton
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatDelegate
+import android.view.View
+import android.view.inputmethod.InputMethodManager
+import android.widget.Button
+import androidx.fragment.app.Fragment
+import java.util.*
 
-import java.util.Locale;
+class SettingsFragment : Fragment(), OnBackPressedListener, Constants {
+    var settings: Settings? = null
+    private lateinit var buttonSettingsSave: Button
+    private lateinit var switchMaterial: SwitchMaterial
+    private lateinit var radioButtonRus: RadioButton
+    private lateinit  var radioButtonEng: RadioButton
 
-public class SettingsFragment extends Fragment implements OnBackPressedListener,Constants {
-
-    private Settings settings;
-
-    private Button buttonSettingsSave;
-    private SwitchMaterial switchMaterial;
-    private RadioButton radioButtonRus;
-    private RadioButton radioButtonEng;
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (savedInstanceState != null)
-            requireActivity().getSupportFragmentManager().popBackStack();
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if (savedInstanceState != null) requireActivity().supportFragmentManager.popBackStack()
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_settings, container, false);
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_settings, container, false)
     }
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        Bundle arguments = getArguments();
 
-        if (arguments != null){
-            settings = arguments.getParcelable(SETTINGS_TAG);
-            if (settings!=null){
-                initViews(view);
-                initSwitch();
-                initButton();
-                hideKeyBoard();
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val arguments = arguments
+        if (arguments != null) {
+            settings = arguments.getParcelable(Constants.SETTINGS_TAG)
+            if (settings != null) {
+                initViews(view)
+                initSwitch()
+                initButton()
+                hideKeyBoard()
             }
         }
     }
 
-    private void initViews(View view) {
-        buttonSettingsSave = view.findViewById(R.id.buttonSettingsSave);
-        switchMaterial = view.findViewById(R.id.switchTheme);
-        radioButtonRus = view.findViewById(R.id.radioButtonRus);
-        radioButtonEng = view.findViewById(R.id.radioButtonEng);
+    private fun initViews(view: View) {
+        buttonSettingsSave = view.findViewById(R.id.buttonSettingsSave)
+        switchMaterial = view.findViewById(R.id.switchTheme)
+        radioButtonRus = view.findViewById(R.id.radioButtonRus)
+        radioButtonEng = view.findViewById(R.id.radioButtonEng)
     }
 
-    private void initButton() {
-        buttonSettingsSave.setOnClickListener(view1 -> {
-            Bundle result = new Bundle();
-            if (radioButtonRus.isChecked())
-                settings.setLanguage(Settings.RUSSIAN);
-            if (radioButtonEng.isChecked())
-                settings.setLanguage(Settings.ENGLISH);
-            applyLanguage();
-
-            result.putParcelable(SETTINGS_TAG, settings);
-            getParentFragmentManager().setFragmentResult(SETTINGS_CHANGED_TAG, result);
-            recoverContainer();
-            requireActivity().getSupportFragmentManager().popBackStack();
-        });
-    }
-
-    private void initSwitch() {
-        switchMaterial.setChecked(settings.getNightMode().equals(Settings.NIGHT_MODE_YES));
-        if (settings.getLanguage().equals(Settings.RUSSIAN)) {
-            radioButtonRus.setChecked(true);
-            radioButtonEng.setChecked(false);
-        }
-        if (settings.getLanguage().equals(Settings.ENGLISH) ){
-            radioButtonRus.setChecked(false);
-            radioButtonEng.setChecked(true);
-        }
-        initSwitchListener();
-    }
-
-    private void initSwitchListener() {
-        switchMaterial.setOnClickListener(view -> {
-            if (switchMaterial.isChecked())
-                settings.setNightMode(Settings.NIGHT_MODE_YES);
-            else
-                settings.setNightMode(Settings.NIGHT_MODE_NO);
-            Bundle result = new Bundle();
-            result.putParcelable(SETTINGS_TAG, settings);
-            getParentFragmentManager().setFragmentResult(SETTINGS_CHANGED_TAG, result);
-            recoverContainer();
-            requireActivity().getSupportFragmentManager().popBackStack();
-
-            if (settings.getNightMode().equals(Settings.NIGHT_MODE_YES))
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-            else
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        });
-
-    }
-
-    private void applyLanguage() {
-        Resources res = getResources();
-        DisplayMetrics dm = res.getDisplayMetrics();
-        android.content.res.Configuration conf = res.getConfiguration();
-        if (settings.getLanguage().equals(Settings.ENGLISH))
-            conf.setLocale(new Locale("en")); // API 17+ only.
-        if (settings.getLanguage().equals(Settings.RUSSIAN))
-            conf.setLocale(new Locale("ru")); // API 17+ only.
-        res.updateConfiguration(conf, dm);
-        ((IDrawerFromFragment)requireActivity()).updateDrawer();
-    }
-
-    public static SettingsFragment newInstance(Settings settings){
-        SettingsFragment settingsFragment = new SettingsFragment();
-        Bundle args = new Bundle();
-        args.putParcelable(SETTINGS_TAG, settings);
-        settingsFragment.setArguments(args);
-        return settingsFragment;
-    }
-
-    @Override
-    public void onBackPressed() {
-        recoverContainer();
-        requireActivity().getSupportFragmentManager().popBackStack();
-    }
-
-    void hideKeyBoard(){
-        View view1 = requireActivity().getCurrentFocus();
-        if (view1 != null) {//скрытие клавиатуры при выходе
-            InputMethodManager imm = (InputMethodManager)requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(view1.getWindowToken(), 0);
+    private fun initButton() {
+        buttonSettingsSave.setOnClickListener {
+            val result = Bundle()
+            if (radioButtonRus.isChecked) settings!!.language = Settings.RUSSIAN
+            if (radioButtonEng.isChecked) settings!!.language = Settings.ENGLISH
+            applyLanguage()
+            result.putParcelable(Constants.SETTINGS_TAG, settings)
+            parentFragmentManager.setFragmentResult(Constants.SETTINGS_CHANGED_TAG, result)
+            recoverContainer()
+            requireActivity().supportFragmentManager.popBackStack()
         }
     }
 
-    void recoverContainer(){
-        if (getResources().getConfiguration().orientation
-                == Configuration.ORIENTATION_LANDSCAPE)//восстанавливаем фрагмент для заметок
-            // для ландшафтной ориентации
-            requireActivity().findViewById(R.id.fragmentNoteContainer).setVisibility(View.VISIBLE);
-        requireActivity().getSupportFragmentManager().popBackStack();
+    private fun initSwitch() {
+        switchMaterial.isChecked = settings!!.nightMode == Settings.NIGHT_MODE_YES
+        if (settings!!.language == Settings.RUSSIAN) {
+            radioButtonRus.isChecked = true
+            radioButtonEng.isChecked = false
+        }
+        if (settings!!.language == Settings.ENGLISH) {
+            radioButtonRus.isChecked = false
+            radioButtonEng.isChecked = true
+        }
+        initSwitchListener()
     }
 
+    private fun initSwitchListener() {
+        switchMaterial.setOnClickListener {
+            if (switchMaterial.isChecked) settings!!.nightMode = Settings.NIGHT_MODE_YES else settings!!.nightMode = Settings.NIGHT_MODE_NO
+            val result = Bundle()
+            result.putParcelable(Constants.SETTINGS_TAG, settings)
+            parentFragmentManager.setFragmentResult(Constants.SETTINGS_CHANGED_TAG, result)
+            recoverContainer()
+            requireActivity().supportFragmentManager.popBackStack()
+            if (settings!!.nightMode == Settings.NIGHT_MODE_YES) AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES) else AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        }
+    }
+
+    private fun applyLanguage() {
+        val res = resources
+        val dm = res.displayMetrics
+        val conf = res.configuration
+        if (settings!!.language == Settings.ENGLISH) conf.setLocale(Locale("en")) // API 17+ only.
+        if (settings!!.language == Settings.RUSSIAN) conf.setLocale(Locale("ru")) // API 17+ only.
+        res.updateConfiguration(conf, dm)
+        (requireActivity() as IDrawerFromFragment).updateDrawer()
+    }
+
+    override fun onBackPressed() {
+        recoverContainer()
+        requireActivity().supportFragmentManager.popBackStack()
+    }
+
+    private fun hideKeyBoard() {
+        val view1 = requireActivity().currentFocus
+        if (view1 != null) { //скрытие клавиатуры при выходе
+            val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(view1.windowToken, 0)
+        }
+    }
+
+    private fun recoverContainer() {
+        if (resources.configuration.orientation
+                == Configuration.ORIENTATION_LANDSCAPE) //восстанавливаем фрагмент для заметок
+        // для ландшафтной ориентации
+            requireActivity().findViewById<View>(R.id.fragmentNoteContainer).visibility = View.VISIBLE
+        requireActivity().supportFragmentManager.popBackStack()
+    }
+
+    companion object {
+        @JvmStatic
+        fun newInstance(settings: Settings?): SettingsFragment {
+            val settingsFragment = SettingsFragment()
+            val args = Bundle()
+            args.putParcelable(Constants.SETTINGS_TAG, settings)
+            settingsFragment.arguments = args
+            return settingsFragment
+        }
+    }
 }

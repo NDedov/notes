@@ -1,6 +1,6 @@
-package com.example.notes;
+package com.example.notes
 
-public interface IDrawerFromFragment {
-    void initDrawer();
-    void updateDrawer();
+interface IDrawerFromFragment {
+    fun initDrawer()
+    fun updateDrawer()
 }

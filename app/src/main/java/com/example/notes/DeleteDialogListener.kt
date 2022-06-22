@@ -1,6 +1,6 @@
-package com.example.notes;
+package com.example.notes
 
-public interface DeleteDialogListener {
-    void onDelete();
-    void onNo();
+interface DeleteDialogListener {
+    fun onDelete()
+    fun onNo()
 }

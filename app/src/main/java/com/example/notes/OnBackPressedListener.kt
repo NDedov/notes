@@ -1,5 +1,5 @@
-package com.example.notes;
+package com.example.notes
 
-public interface OnBackPressedListener {
-    void onBackPressed();
+interface OnBackPressedListener {
+    fun onBackPressed()
 }

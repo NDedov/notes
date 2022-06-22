@@ -1,86 +1,65 @@
-package com.example.notes;
+package com.example.notes
 
-import android.annotation.SuppressLint;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-import java.text.SimpleDateFormat;
-import java.util.List;
+import androidx.recyclerview.widget.RecyclerView
+import com.example.notes.NoteListAdapter.NoteListViewHolder
+import android.view.ViewGroup
+import android.view.LayoutInflater
+import android.annotation.SuppressLint
+import android.view.View
+import android.widget.TextView
+import android.widget.ImageView
+import java.text.SimpleDateFormat
 
-public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.NoteListViewHolder> implements Constants {
-
-    private List<Note> list;
-
-    private NotesListClickListener listener;
-
-    public void setListener(NotesListClickListener listener) {
-        this.listener = listener;
+class NoteListAdapter : RecyclerView.Adapter<NoteListViewHolder>(), Constants {
+    private var list: List<Note>? = null
+    private var listener: NotesListClickListener? = null
+    fun setListener(listener: NotesListClickListener?) {
+        this.listener = listener
     }
 
-    public void setList(List<Note> list) {
-        this.list = list;
+    fun setList(list: List<Note>?) {
+        this.list = list
     }
 
-    @NonNull
-    @Override
-    public NoteListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list_note, parent, false);
-        return new NoteListViewHolder(v);
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteListViewHolder {
+        val v = LayoutInflater.from(parent.context).inflate(R.layout.item_list_note, parent, false)
+        return NoteListViewHolder(v)
     }
 
     @SuppressLint("SimpleDateFormat")
-    @Override
-    public void onBindViewHolder(@NonNull NoteListViewHolder holder, int position) {
-
-        holder.getItemView().<TextView>findViewById(R.id.titleItemListNoteTextView)
-                .setText(list.get(position).getTitle());
-        holder.getItemView().<TextView>findViewById(R.id.textItemListNoteTextView)
-                .setText(preview(list.get(position).getText()));
-        holder.getItemView().<TextView>findViewById(R.id.dateItemListNoteTextView)
-                .setText(new SimpleDateFormat("dd MMMM yyyy  HH:mm")
-                        .format(list.get(position).getDateTimeModify().getTime()));
-
-        if (list.get(position).isFavourite())
-            holder.getItemView().<ImageView>findViewById(R.id.favoriteImageItemListNote)
-                    .setImageResource(R.drawable.ic_favorite_yes);
-        else
-            holder.getItemView().<ImageView>findViewById(R.id.favoriteImageItemListNote)
-                    .setImageResource(R.drawable.ic_favorite_no);
+    override fun onBindViewHolder(holder: NoteListViewHolder, position: Int) {
+        holder.itemView.findViewById<TextView>(R.id.titleItemListNoteTextView).text = list!![position].getTitle()
+        holder.itemView.findViewById<TextView>(R.id.textItemListNoteTextView).text = preview(list!![position].getText())
+        holder.itemView.findViewById<TextView>(R.id.dateItemListNoteTextView).text = SimpleDateFormat("dd MMMM yyyy  HH:mm")
+                .format(list!![position].dateTimeModify!!.time)
+        if (list!![position].isFavourite()) holder.itemView.findViewById<ImageView>(R.id.favoriteImageItemListNote)
+                .setImageResource(R.drawable.ic_favorite_yes) else holder.itemView.findViewById<ImageView>(R.id.favoriteImageItemListNote)
+                .setImageResource(R.drawable.ic_favorite_no)
     }
 
-    @Override
-    public int getItemCount() {
-        return list.size();
+    override fun getItemCount(): Int {
+        return list!!.size
     }
 
-    public class NoteListViewHolder extends RecyclerView.ViewHolder {
+    inner class NoteListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val itemView: View
+            get() = itemView
 
-        private final View itemView;
-
-        public NoteListViewHolder(@NonNull View itemView) {
-            super(itemView);
-            this.itemView = itemView;
-
-            itemView.findViewById(R.id.linearCardView).setOnLongClickListener(view -> {
-                Note note = list.get(getAdapterPosition());
-                listener.onLongClick(note, view, getAdapterPosition());
-                return true;
-            });
-            itemView.findViewById(R.id.linearCardView).setOnClickListener(view -> {
-                Note note = list.get(getAdapterPosition());
-                listener.onClick(note);
-            });
-            itemView.findViewById((R.id.favoriteLayout)).setOnClickListener(view -> {
-                Note note = list.get(getAdapterPosition());
-                listener.onFavoriteClick(note, itemView, getAdapterPosition());
-            });
-        }
-        public View getItemView() {
-            return itemView;
+        init {
+            //this.itemView = itemView
+            itemView.findViewById<View>(R.id.linearCardView).setOnLongClickListener { view: View? ->
+                val note = list!![adapterPosition]
+                listener!!.onLongClick(note, view, adapterPosition)
+                true
+            }
+            itemView.findViewById<View>(R.id.linearCardView).setOnClickListener {
+                val note = list!![adapterPosition]
+                listener!!.onClick(note)
+            }
+            itemView.findViewById<View>(R.id.favoriteLayout).setOnClickListener {
+                val note = list!![adapterPosition]
+                listener!!.onFavoriteClick(note, itemView, adapterPosition)
+            }
         }
     }
 
@@ -89,12 +68,11 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.NoteLi
      * @param text входной текст
      * @return обрезанный текст
      */
-    private String preview(String text) {
-        text = text.replace("\n"," ");
-        text = text.replace("\t"," ");
-        text = text.replace("\r"," ");
-        if (text.length() < PREVIEW_LIST_LENGTH)
-            return text;
-        return text.substring(0,PREVIEW_LIST_LENGTH) + "...";
+    private fun preview(text: String?): String {
+        var text = text
+        text = text!!.replace("\n", " ")
+        text = text.replace("\t", " ")
+        text = text.replace("\r", " ")
+        return if (text.length < Constants.PREVIEW_LIST_LENGTH) text else text.substring(0, Constants.PREVIEW_LIST_LENGTH) + "..."
     }
 }
