@@ -1,4 +1,4 @@
-package com.example.notes
+package com.example.notes.fragments.settings
 
 import android.content.Context
 import android.content.res.Configuration
@@ -13,6 +13,10 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import androidx.fragment.app.Fragment
+import com.example.notes.add.Constants
+import com.example.notes.activity.IDrawerFromFragment
+import com.example.notes.activity.OnBackPressedListener
+import com.example.notes.R
 import java.util.*
 
 class SettingsFragment : Fragment(), OnBackPressedListener, Constants {

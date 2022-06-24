@@ -1,4 +1,4 @@
-package com.example.notes
+package com.example.notes.fragments.notes
 
 import android.os.Bundle
 import android.app.Activity
@@ -6,6 +6,8 @@ import android.app.Dialog
 import android.content.DialogInterface
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
+import com.example.notes.add.Constants
+import com.example.notes.R
 
 class DeleteNoteDialogFragment : DialogFragment(), Constants {
     private var listener: DeleteDialogListener? = null

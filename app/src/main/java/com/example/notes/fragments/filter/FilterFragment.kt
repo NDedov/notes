@@ -1,4 +1,4 @@
-package com.example.notes
+package com.example.notes.fragments.filter
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,6 +7,9 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.RadioButton
 import androidx.fragment.app.Fragment
+import com.example.notes.add.Constants
+import com.example.notes.fragments.notes.Note
+import com.example.notes.R
 
 class FilterFragment : Fragment(), Constants {
     private var currentFilterPosition = 0

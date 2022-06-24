@@ -1,4 +1,4 @@
-package com.example.notes
+package com.example.notes.fragments
 
 import android.content.Context
 import android.content.res.Configuration
@@ -9,6 +9,8 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
+import com.example.notes.activity.OnBackPressedListener
+import com.example.notes.R
 
 class AboutFragment : Fragment(), OnBackPressedListener {
     override fun onCreate(savedInstanceState: Bundle?) {

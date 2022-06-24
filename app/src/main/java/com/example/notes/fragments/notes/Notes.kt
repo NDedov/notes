@@ -1,4 +1,4 @@
-package com.example.notes
+package com.example.notes.fragments.notes
 
 import android.os.Parcelable
 import android.os.Parcel
@@ -44,9 +44,12 @@ class Notes :Parcelable{
     }
 
     fun testFillNotes() {
-        notes.add(Note("Первая заметка", "Добрый день, \tкак дела?\nПривет",
-                GregorianCalendar(), 0, false))
-        notes.add(Note("Покупки", """
+        notes.add(
+            Note("Первая заметка", "Добрый день, \tкак дела?\nПривет",
+                GregorianCalendar(), 0, false)
+        )
+        notes.add(
+            Note("Покупки", """
      Молоко, хлеб
      Масло
      Молоко
@@ -89,27 +92,48 @@ class Notes :Parcelable{
      Масло
      Молоко
      """.trimIndent(),
-                GregorianCalendar(), 2, true))
-        notes.add(Note("Третья заметка", "Добрый день опять, как дела?\nПривет",
-                GregorianCalendar(), 1, false))
-        notes.add(Note("Новая заметка", "Добрый день, как дела?\n Привет",
-                GregorianCalendar(), 0, false))
-        notes.add(Note("Что надо сделать срочно", "Молоко, хлеб\n Масло",
-                GregorianCalendar(), 2, true))
-        notes.add(Note("Пароли", "Добрый день опять, как дела?\n Привет",
-                GregorianCalendar(), 4, false))
-        notes.add(Note("Прочее", "Добрый день, как дела?\n Привет",
-                GregorianCalendar(), 0, false))
-        notes.add(Note("Покупки", "Молоко, хлеб\n Масло",
-                GregorianCalendar(), 2, true))
-        notes.add(Note("Третья заметка", "Добрый день опять, как дела?\n Привет",
-                GregorianCalendar(), 0, false))
-        notes.add(Note("Первая заметка", "Добрый день, как дела?\n Привет",
-                GregorianCalendar(), 0, false))
-        notes.add(Note("Покупки", "Молоко, хлеб\n Масло",
-                GregorianCalendar(), 2, true))
-        notes.add(Note("Третья заметка", "Добрый день опять, как дела?\n Привет",
-                GregorianCalendar(), 0, false))
+                GregorianCalendar(), 2, true)
+        )
+        notes.add(
+            Note("Третья заметка", "Добрый день опять, как дела?\nПривет",
+                GregorianCalendar(), 1, false)
+        )
+        notes.add(
+            Note("Новая заметка", "Добрый день, как дела?\n Привет",
+                GregorianCalendar(), 0, false)
+        )
+        notes.add(
+            Note("Что надо сделать срочно", "Молоко, хлеб\n Масло",
+                GregorianCalendar(), 2, true)
+        )
+        notes.add(
+            Note("Пароли", "Добрый день опять, как дела?\n Привет",
+                GregorianCalendar(), 4, false)
+        )
+        notes.add(
+            Note("Прочее", "Добрый день, как дела?\n Привет",
+                GregorianCalendar(), 0, false)
+        )
+        notes.add(
+            Note("Покупки", "Молоко, хлеб\n Масло",
+                GregorianCalendar(), 2, true)
+        )
+        notes.add(
+            Note("Третья заметка", "Добрый день опять, как дела?\n Привет",
+                GregorianCalendar(), 0, false)
+        )
+        notes.add(
+            Note("Первая заметка", "Добрый день, как дела?\n Привет",
+                GregorianCalendar(), 0, false)
+        )
+        notes.add(
+            Note("Покупки", "Молоко, хлеб\n Масло",
+                GregorianCalendar(), 2, true)
+        )
+        notes.add(
+            Note("Третья заметка", "Добрый день опять, как дела?\n Привет",
+                GregorianCalendar(), 0, false)
+        )
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {

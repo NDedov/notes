@@ -1,4 +1,4 @@
-package com.example.notes
+package com.example.notes.fragments
 
 import android.content.res.Configuration
 import android.os.Bundle
@@ -10,6 +10,9 @@ import android.widget.TextView
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import androidx.fragment.app.Fragment
+import com.example.notes.add.Constants
+import com.example.notes.activity.OnBackPressedListener
+import com.example.notes.R
 
 class StartScreenFragment : Fragment(), OnBackPressedListener, Constants {
 

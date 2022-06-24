@@ -1,13 +1,15 @@
-package com.example.notes
+package com.example.notes.fragments.notes
 
 import androidx.recyclerview.widget.RecyclerView
-import com.example.notes.NoteListAdapter.NoteListViewHolder
+import com.example.notes.fragments.notes.NoteListAdapter.NoteListViewHolder
 import android.view.ViewGroup
 import android.view.LayoutInflater
 import android.annotation.SuppressLint
 import android.view.View
 import android.widget.TextView
 import android.widget.ImageView
+import com.example.notes.add.Constants
+import com.example.notes.R
 import java.text.SimpleDateFormat
 
 class NoteListAdapter : RecyclerView.Adapter<NoteListViewHolder>(), Constants {
@@ -33,7 +35,9 @@ class NoteListAdapter : RecyclerView.Adapter<NoteListViewHolder>(), Constants {
         holder.itemView.findViewById<TextView>(R.id.dateItemListNoteTextView).text = SimpleDateFormat("dd MMMM yyyy  HH:mm")
                 .format(list!![position].dateTimeModify!!.time)
         if (list!![position].isFavourite()) holder.itemView.findViewById<ImageView>(R.id.favoriteImageItemListNote)
-                .setImageResource(R.drawable.ic_favorite_yes) else holder.itemView.findViewById<ImageView>(R.id.favoriteImageItemListNote)
+                .setImageResource(R.drawable.ic_favorite_yes) else holder.itemView.findViewById<ImageView>(
+            R.id.favoriteImageItemListNote
+        )
                 .setImageResource(R.drawable.ic_favorite_no)
     }
 
@@ -73,6 +77,8 @@ class NoteListAdapter : RecyclerView.Adapter<NoteListViewHolder>(), Constants {
         text = text!!.replace("\n", " ")
         text = text.replace("\t", " ")
         text = text.replace("\r", " ")
-        return if (text.length < Constants.PREVIEW_LIST_LENGTH) text else text.substring(0, Constants.PREVIEW_LIST_LENGTH) + "..."
+        return if (text.length < Constants.PREVIEW_LIST_LENGTH) text else text.substring(0,
+            Constants.PREVIEW_LIST_LENGTH
+        ) + "..."
     }
 }

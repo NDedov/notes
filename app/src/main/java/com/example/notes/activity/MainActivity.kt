@@ -1,4 +1,4 @@
-package com.example.notes
+package com.example.notes.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.content.res.Configuration
@@ -14,10 +14,19 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.FragmentTransaction
+import com.example.notes.*
+import com.example.notes.add.Constants
+import com.example.notes.fragments.AboutFragment
+import com.example.notes.fragments.StartScreenFragment
+import com.example.notes.fragments.notes.NoteListFragment
+import com.example.notes.fragments.notes.Notes
+import com.example.notes.fragments.settings.Settings
+import com.example.notes.fragments.settings.SettingsFragment
 import com.google.gson.GsonBuilder
 import java.util.*
 
-open class MainActivity : AppCompatActivity(), Constants, IDrawerFromFragment, IWorkSharedPreferences {
+open class MainActivity : AppCompatActivity(), Constants, IDrawerFromFragment,
+    IWorkSharedPreferences {
     private var backPressedTime // счетчик времени для выхода из активити
             : Long = 0
     private var settings //настройки
@@ -67,7 +76,11 @@ open class MainActivity : AppCompatActivity(), Constants, IDrawerFromFragment, I
     private fun openNoteListFragment() {
         supportFragmentManager
                 .beginTransaction()
-                .replace(R.id.fragmentContainer, NoteListFragment.newInstance(settings), Constants.FRAGMENT_TAG)
+                .replace(
+                    R.id.fragmentContainer,
+                    NoteListFragment.newInstance(settings),
+                    Constants.FRAGMENT_TAG
+                )
                 .commit()
     }
 
@@ -129,8 +142,9 @@ open class MainActivity : AppCompatActivity(), Constants, IDrawerFromFragment, I
         // Создаем ActionBarDrawerToggle
         val toggle = ActionBarDrawerToggle(
                 this, drawer, toolbar,
-                R.string.navigation_drawer_open,
-                R.string.navigation_drawer_close)
+            R.string.navigation_drawer_open,
+            R.string.navigation_drawer_close
+        )
         drawer.addDrawerListener(toggle)
         toggle.syncState()
         initNavigationListener(drawer)
@@ -196,7 +210,7 @@ open class MainActivity : AppCompatActivity(), Constants, IDrawerFromFragment, I
                 Toast.LENGTH_SHORT)
         val toastView = toast.view
         toastView!!.background = ResourcesCompat.getDrawable(resources,
-                R.drawable.rounded_corner_toast, null)
+            R.drawable.rounded_corner_toast, null)
         toast.show()
     }
 
@@ -251,14 +265,16 @@ open class MainActivity : AppCompatActivity(), Constants, IDrawerFromFragment, I
     }
 
     override fun saveSettings(settings: Settings?) {
-        val sharedPreferences = getSharedPreferences(Constants.NOTES_SHARED_P,
+        val sharedPreferences = getSharedPreferences(
+            Constants.NOTES_SHARED_P,
                 MODE_PRIVATE)
         val jsonSettings = GsonBuilder().create().toJson(settings)
         sharedPreferences.edit().putString(Constants.NOTES_SHARED_P_KEY_SETTINGS, jsonSettings).apply()
     }
 
     override fun restoreSettings(): Settings? {
-        val sharedPreferences = getSharedPreferences(Constants.NOTES_SHARED_P,
+        val sharedPreferences = getSharedPreferences(
+            Constants.NOTES_SHARED_P,
                 MODE_PRIVATE)
         val savedSettings = sharedPreferences.getString(Constants.NOTES_SHARED_P_KEY_SETTINGS, null)
         return if (savedSettings != null) GsonBuilder().create().fromJson(savedSettings, Settings::class.java) else null

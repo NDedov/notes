@@ -1,4 +1,4 @@
-package com.example.notes
+package com.example.notes.add
 
 import android.widget.TextView
 import android.text.Editable

@@ -1,4 +1,4 @@
-package com.example.notes
+package com.example.notes.fragments.notes
 
 import android.view.View
 

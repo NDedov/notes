@@ -1,8 +1,9 @@
-package com.example.notes
+package com.example.notes.fragments.filter
 
 import android.os.Parcelable
 import android.os.Parcel
 import android.os.Parcelable.Creator
+import com.example.notes.fragments.notes.Note
 import java.util.*
 
 class Filter : Parcelable {

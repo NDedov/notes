@@ -1,4 +1,4 @@
-package com.example.notes
+package com.example.notes.fragments.notes
 
 import android.os.Parcelable
 import android.os.Parcel

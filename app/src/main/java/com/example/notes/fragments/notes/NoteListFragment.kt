@@ -1,9 +1,9 @@
-package com.example.notes
+package com.example.notes.fragments.notes
 
 
 import android.annotation.SuppressLint
-import com.example.notes.FilterFragment.Companion.newInstance
-import com.example.notes.NoteTextFragment.Companion.newInstance
+import com.example.notes.fragments.filter.FilterFragment.Companion.newInstance
+import com.example.notes.fragments.notes.NoteTextFragment.Companion.newInstance
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.GsonBuilder
@@ -19,6 +19,14 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import com.example.notes.*
+import com.example.notes.activity.IDrawerFromFragment
+import com.example.notes.activity.IWorkSharedPreferences
+import com.example.notes.add.Constants
+import com.example.notes.fragments.filter.Filter
+import com.example.notes.fragments.filter.FilterFragment
+import com.example.notes.fragments.settings.Settings
+import com.example.notes.fragments.settings.SettingsFragment
 
 import java.util.*
 
@@ -40,14 +48,16 @@ class NoteListFragment : Fragment(), Constants {
     private val workSharedPreferences: IWorkSharedPreferences = object : IWorkSharedPreferences {
        // private var sharedPreferences: SharedPreferences? = null
         override fun saveNotes(notes: Notes?) {
-            val sharedPreferences = requireActivity().getSharedPreferences(Constants.NOTES_SHARED_P,
+            val sharedPreferences = requireActivity().getSharedPreferences(
+                Constants.NOTES_SHARED_P,
                     Context.MODE_PRIVATE)
             val jsonNotes = GsonBuilder().create().toJson(notes)
             sharedPreferences.edit().putString(Constants.NOTES_SHARED_P_KEY_NOTES, jsonNotes).apply()
         }
 
         override fun restoreNotes(): Notes? {
-            val sharedPreferences = requireActivity().getSharedPreferences(Constants.NOTES_SHARED_P,
+            val sharedPreferences = requireActivity().getSharedPreferences(
+                Constants.NOTES_SHARED_P,
                     Context.MODE_PRIVATE)
             val savedNotes = sharedPreferences.getString(Constants.NOTES_SHARED_P_KEY_NOTES, null)
             return if (savedNotes != null) GsonBuilder().create().fromJson(savedNotes, Notes::class.java) else null
@@ -150,21 +160,24 @@ class NoteListFragment : Fragment(), Constants {
 
     private fun initFragmentResultListeners(view: View) {
         //прописываем Листенер, отлавливаем изменения в заметке из NoteTextFragment, обновляем список (превью)
-        parentFragmentManager.setFragmentResultListener(Constants.NOTE_CHANGED, this
+        parentFragmentManager.setFragmentResultListener(
+            Constants.NOTE_CHANGED, this
         ) { key: String?, bundle: Bundle ->
             notes!!.setCurrentNote(bundle.getParcelable(Constants.NOTE_CHANGE_INDEX))
             initListNotes(view)
         }
 
         //листенер на флаг удаления заметки
-        parentFragmentManager.setFragmentResultListener(Constants.NOTE_DELETE, this
+        parentFragmentManager.setFragmentResultListener(
+            Constants.NOTE_DELETE, this
         ) { key: String?, bundle: Bundle ->
             notes!!.delete(bundle.getParcelable(Constants.NOTE_CHANGE_INDEX)!!)
             initListNotes(view)
             if (isLandscape) showNotes(notes!!.getCurrentNote(), true)
         }
         //листенер, обрабатывающий изменение в фильтре категорий
-        childFragmentManager.setFragmentResultListener(Constants.RESULT_OK_FILTER_EXIT_INDEX, this
+        childFragmentManager.setFragmentResultListener(
+            Constants.RESULT_OK_FILTER_EXIT_INDEX, this
         ) { requestKey: String?, result: Bundle ->
             filter!!.currentFilterCategory = result.getInt(Constants.FILTER_INDEX, Note.categories.size)
             initListNotes(view)
@@ -245,13 +258,16 @@ class NoteListFragment : Fragment(), Constants {
             filterClearButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_cancel, 0, 0)
             filterClearButton.isEnabled = true
         } else {
-            filterClearButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_cancel_grey, 0, 0)
+            filterClearButton.setCompoundDrawablesWithIntrinsicBounds(0,
+                R.drawable.ic_cancel_grey, 0, 0)
             filterClearButton.isEnabled = false
         }
     }
 
     private fun showFavoriteIcon() {
-        if (filter!!.isFavoriteShow) filterFavoriteButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_favorite_yes, 0, 0) else filterFavoriteButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_favorite_no, 0, 0)
+        if (filter!!.isFavoriteShow) filterFavoriteButton.setCompoundDrawablesWithIntrinsicBounds(0,
+            R.drawable.ic_favorite_yes, 0, 0) else filterFavoriteButton.setCompoundDrawablesWithIntrinsicBounds(0,
+            R.drawable.ic_favorite_no, 0, 0)
     }
 
     private val isLandscape: Boolean
@@ -300,7 +316,9 @@ class NoteListFragment : Fragment(), Constants {
             override fun onFavoriteClick(note: Note?, item: View?, position: Int) { //при нажатии на звездочку добавляем или удаляем из избранного
                 note!!.setFavourite(!note.isFavourite())
                 if (note.isFavourite()) item!!.findViewById<ImageView>(R.id.favoriteImageItemListNote)
-                        .setImageResource(R.drawable.ic_favorite_yes) else item!!.findViewById<ImageView>(R.id.favoriteImageItemListNote)
+                        .setImageResource(R.drawable.ic_favorite_yes) else item!!.findViewById<ImageView>(
+                    R.id.favoriteImageItemListNote
+                )
                         .setImageResource(R.drawable.ic_favorite_no)
                 if (filter!!.isFavoriteShow) {
                     adapter.setList(listToShow)

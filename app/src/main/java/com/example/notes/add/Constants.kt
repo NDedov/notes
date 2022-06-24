@@ -1,4 +1,4 @@
-package com.example.notes
+package com.example.notes.add
 
 internal interface Constants {
     companion object {

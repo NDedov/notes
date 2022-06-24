@@ -1,4 +1,4 @@
-package com.example.notes
+package com.example.notes.fragments.notes
 
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatButton
@@ -21,6 +21,10 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
+import com.example.notes.*
+import com.example.notes.activity.OnBackPressedListener
+import com.example.notes.add.Constants
+import com.example.notes.add.TextViewUndoRedo
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -140,7 +144,7 @@ class NoteTextFragment : Fragment(), Constants, DeleteDialogListener, OnBackPres
                 Toast.LENGTH_SHORT)
         val toastView = toast.view
         toastView!!.background = ResourcesCompat.getDrawable(resources,
-                R.drawable.rounded_corner_toast, null)
+            R.drawable.rounded_corner_toast, null)
         toast.show()
     }
 
@@ -158,7 +162,8 @@ class NoteTextFragment : Fragment(), Constants, DeleteDialogListener, OnBackPres
             val deleteNoteDialogFragment = DeleteNoteDialogFragment()
             deleteNoteDialogFragment.setListener(this@NoteTextFragment)
             deleteNoteDialogFragment.show(requireActivity().supportFragmentManager,
-                    Constants.DELETE_NOTE_DIALOG_TAG)
+                Constants.DELETE_NOTE_DIALOG_TAG
+            )
         }
     }
 
@@ -326,7 +331,8 @@ class NoteTextFragment : Fragment(), Constants, DeleteDialogListener, OnBackPres
         dateTimeView.text = SimpleDateFormat("dd MMMM yyyy  HH:mm", Locale.getDefault())
                 .format(note!!.dateTimeModify!!.time)
         val categoryAdapter = ArrayAdapter(requireContext(),
-                android.R.layout.simple_spinner_item, Note.categories)
+                android.R.layout.simple_spinner_item, Note.categories
+        )
         categorySpinner.adapter = categoryAdapter
         categorySpinner.setSelection(note!!.getCategoryID())
         helperTextView = TextViewUndoRedo(textView)
@@ -350,7 +356,9 @@ class NoteTextFragment : Fragment(), Constants, DeleteDialogListener, OnBackPres
     }
 
     private fun showFavoriteButton() {
-        if (note!!.isFavourite()) favoriteButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_favorite_yes, 0, 0) else favoriteButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_favorite_no, 0, 0)
+        if (note!!.isFavourite()) favoriteButton.setCompoundDrawablesWithIntrinsicBounds(0,
+            R.drawable.ic_favorite_yes, 0, 0) else favoriteButton.setCompoundDrawablesWithIntrinsicBounds(0,
+            R.drawable.ic_favorite_no, 0, 0)
     }
 
     private val isLandscape: Boolean
